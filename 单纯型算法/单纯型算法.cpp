@@ -520,12 +520,14 @@ class Simplex{
 int main()
 {
 	Simplex simplex; 
-	simplex.Init();
-	bool flag = simplex.SimplexSolve();
-	if(flag){
-		Fraction ans = simplex.getopt(); 	
-	}else{
-		cout<<"无最优解"<<endl; 
+	while(1){
+		simplex.Init();
+		bool flag = simplex.SimplexSolve();
+		if(flag){
+			Fraction ans = simplex.getopt(); 	
+		}else{
+			cout<<"无最优解"<<endl; 
+		}	
 	}
 	
 	return 0;
