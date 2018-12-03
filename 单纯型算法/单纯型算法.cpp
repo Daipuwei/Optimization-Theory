@@ -3,191 +3,165 @@
 #include <cstring>
 #include <set>
 #include <algorithm>
-#include <E:\ÑĞ¾¿Éú\ÔË³ïÑ§\µ¥´¿ĞÍËã·¨\Fraction.h> 
+#include <E:\ç ”ç©¶ç”Ÿ\è¿ç­¹å­¦\å•çº¯å‹ç®—æ³•\Fraction.h> 
 using namespace std;
 
 const long long SIZE = 100;
 
 /*
-	ÕâÊÇÊµÏÖÏßĞÔ¹æ»®±ê×¼ĞÍÏÂµÄµ¥´¿ĞÍËã·¨£¬ 
+	è¿™æ˜¯å®ç°çº¿æ€§è§„åˆ’æ ‡å‡†å‹ä¸‹çš„å•çº¯å‹ç®—æ³•ï¼Œ 
 */
 
 class Simplex{
 	private:
-		int m;												//Ô¼ÊøÌõ¼ş¸öÊı 
-		int n;						   		   			   //±äÁ¿¸öÊı 
-		Fraction A[SIZE][SIZE];				  			  //Ô¼ÊøÏµÊı¾ØÕó 
-		Fraction b[SIZE];					 			 //³£ÊıÏî¾ØÕó
-		Fraction c[SIZE]; 								//Ä¿±êº¯ÊıÏµÊı
-		Fraction cb[SIZE];							   //»ùÏòÁ¿¶ÔÓ¦µÄÄ¿±êÏµÊı 
-		Fraction theta[SIZE];			 			 //³£ÊıÏîÓë»»»ùÔ¼Êø¾ØÕóÁĞÏòÁ¿µÄÏà³ıµÄ½á¹û
-		int basic_vector_list[SIZE];					//±äÁ¿ÁĞ±í 
+		int m;												//çº¦æŸæ¡ä»¶ä¸ªæ•° 
+		int n;						   		   			   //å˜é‡ä¸ªæ•° 
+		Fraction A[SIZE][SIZE];				  			  //çº¦æŸç³»æ•°çŸ©é˜µ 
+		Fraction b[SIZE];					 			 //å¸¸æ•°é¡¹çŸ©é˜µ
+		Fraction c[SIZE]; 								//ç›®æ ‡å‡½æ•°ç³»æ•°
+		Fraction cb[SIZE];							   //åŸºå‘é‡å¯¹åº”çš„ç›®æ ‡ç³»æ•° 
+		Fraction theta[SIZE];			 			  //å¸¸æ•°é¡¹ä¸æ¢åŸºçº¦æŸçŸ©é˜µåˆ—å‘é‡çš„ç›¸é™¤çš„ç»“æœ
+		int basic_vector_list[SIZE];				 //å˜é‡åˆ—è¡¨ 
+		int type;									//è®°å½•çº¦æŸç›®æ ‡ç±»å‹ï¼Œ-1ä»£è¡¨æœ€å°åŒ–ï¼Œ1ä»£è¡¨æœ€å¤§åŒ– 
 	public:
-		//³õÊ¼»¯ÏßĞÔ¹æ»®Ä¿±êº¯ÊıÓëÔ¼ÊøÌõ¼ş 
+		//åˆå§‹åŒ–çº¿æ€§è§„åˆ’ç›®æ ‡å‡½æ•°ä¸çº¦æŸæ¡ä»¶ 
 		void Init(){
-			//Ê×ÏÈ³õÊ¼»¯Ïà¹ØÏµÊı¾ØÕó
-			Fraction tmp;
-			tmp.set("0/1");
+			//é¦–å…ˆåˆå§‹åŒ–ç›¸å…³ç³»æ•°çŸ©é˜µ
 			for(int i = 0 ; i < SIZE ; i++){
 				for(int j = 0 ; j < SIZE ; j++){
-					this->A[i][j] = tmp;
+					this->A[i][j].set("0/1");
 				}
-				this->b[i] = this->c[i] = tmp;
+				this->b[i].set("0/1");
+				this->c[i].set("0/1");
 			}
 			int m,n,type,direction;
-			cout<<"------------µ¥´¿ĞÍËã·¨ÊäÈë------------------------"<<endl; 
-			cout<<"ÇëÊäÈëÔ¼ÊøÌõ¼ş¸öÊım:"<<endl;
+			cout<<"------------å•çº¯å‹ç®—æ³•è¾“å…¥------------------------"<<endl; 
+			cout<<"è¯·è¾“å…¥çº¦æŸæ¡ä»¶ä¸ªæ•°m:"<<endl;
 			cin>>m;
 			this->m = m;
-			cout<<"ÇëÊäÈë±äÁ¿¸öÊın:"<<endl;
+			cout<<"è¯·è¾“å…¥å˜é‡ä¸ªæ•°n:"<<endl;
 			cin>>n;
 			this->n = n;
-			cout<<"ÇëÊäÈëÔ¼ÊøÌõ¼şÏµÊıÓë²»µÈÊ½·½Ïò(-1´ú±í<=£¬0´ú±í=£¬1´ú±í>=)"<<endl;
+			cout<<"è¯·è¾“å…¥çº¦æŸæ¡ä»¶ç³»æ•°ä¸ä¸ç­‰å¼æ–¹å‘(-1ä»£è¡¨<=ï¼Œ0ä»£è¡¨=ï¼Œ1ä»£è¡¨>=)"<<endl;
 			for(int i = 1 ; i <= n ; i++){
 				cout<<"\t\tx"<<i; 
 			}
-			cout<<"\t\t"<<"²»µÈÊ½·½Ïò\t\t³£ÊıÏî"<<endl;
-			int cnt = 0;	//ËÉ³Ú±äÁ¿¼ÆÊıÆ÷ 
+			cout<<"\t\t"<<"ä¸ç­‰å¼æ–¹å‘\t\tå¸¸æ•°é¡¹"<<endl;
+			int cnt = 0;	//æ¾å¼›å˜é‡è®¡æ•°å™¨ 
 			for(int i = 0 ; i < m ; i++){
-				cout<<"ÊäÈë²»µÈÊ½"<<i+1<<":";
-				Fraction a;
+				cout<<"è¾“å…¥ä¸ç­‰å¼"<<i+1<<":";
 				for(int j = 0 ; j < n ; j++){
 					string str;
 					cin>>str;
-					a.set(str);
-					this->A[i][j] = a;
+					this->A[i][j].set(str);
 				}
-				//ÊäÈë²»µÈÊ½·½ÏòºÍ³£ÊıÏî 
-				string _b;		//³£ÊıÏî 
+				//è¾“å…¥ä¸ç­‰å¼æ–¹å‘å’Œå¸¸æ•°é¡¹ 
+				string _b;		//å¸¸æ•°é¡¹ 
 				cin>>direction>>_b;
-				if(direction == -1){			//²»µÈÊ½·½ÏòÎª<=,Ô¼Êø¾ØÕó¶ÔÓ¦ĞĞ¼ÓÒ»¸öËÉ³Ú±äÁ¿ 
+				if(direction != 0){
 					Fraction relaxation_variable;
-					relaxation_variable.set("1/1");
+					relaxation_variable.set("1/1");	//ä¸ç­‰å·ä¸º<=æ—¶ï¼Œç³»æ•°ç½®ä¸º1 
+					if(direction == 1){//ä¸ç­‰å·ä¸º>=æ—¶ï¼Œç³»æ•°ç½®ä¸º-1 
+						relaxation_variable.setOpposite();
+					}
 					this->A[i][n+cnt] = relaxation_variable;
-					cnt++;
-				}else if(direction == 1){			//²»µÈÊ½·½ÏòÎª>=,Ô¼Êø¾ØÕó¶ÔÓ¦ĞĞ¼õÈ¥Ò»¸öËÉ³Ú±äÁ¿ 
-					Fraction relaxation_variable;
-					relaxation_variable.set("-1/1");
-					this->A[i][n+cnt] = relaxation_variable;
-					cnt++;
+					cnt++;	
 				}
-				Fraction b_;
-				b_.set(_b);
-				this->b[i] = b_;
+				this->b[i].set(_b);
 			} 
-			cout<<"ÇëÊäÈëÄ¿±êº¯ÊıÓÅ»¯ÀàĞÍºÍÄ¿±êº¯ÊıÏµÊı¾ØÕó(ÀàĞÍÖµÎª1´ú±í×î´ó,-1´ú±í×îĞ¡)"<<endl; 
-			cout<<"ÇëÊäÈëÄ¿±êº¯ÊıÓÅ»¯ÀàĞÍ£º"<<endl; 
+			cout<<"è¯·è¾“å…¥ç›®æ ‡å‡½æ•°ä¼˜åŒ–ç±»å‹å’Œç›®æ ‡å‡½æ•°ç³»æ•°çŸ©é˜µ(ç±»å‹å€¼ä¸º1ä»£è¡¨æœ€å¤§,-1ä»£è¡¨æœ€å°)"<<endl; 
+			cout<<"è¯·è¾“å…¥ç›®æ ‡å‡½æ•°ä¼˜åŒ–ç±»å‹ï¼š"<<endl; 
 			cin>>type;
-			cout<<"ÇëÊäÈëÄ¿±êº¯ÊıÏµÊı£º"<<endl;
+			this->type = type;
+			cout<<"è¯·è¾“å…¥ç›®æ ‡å‡½æ•°ç³»æ•°ï¼š"<<endl;
 			for(int i = 1 ; i <= n ; i++){
 				cout<<"\tx"<<i;
 			}
 			cout<<endl;
 			for(int i = 0 ; i < this->n ; i++){
-				Fraction c_;
-				c_.set("0/1");
-				this->c[i] = c_;
-				this->cb[i] = c_;
+				this->c[i].set("0/1");
+				this->cb[i].set("0/1");
 			}
 			for(int i = 0 ; i < n ; i++){
 				string str;
 				cin>>str;
-				if(type == -1){				// µ±Ä¿±êº¯ÊıÓĞÇó×îĞ¡ÖµÊ±£¬Òª½øĞĞÄ£ĞÍ×ª»¯£¬×ª»»Îª×î´óÖµ 
-					if(str[0] == '-'){		//str1Îª¸ºÊıÊ±£¬ÕâÈ¥µô·ûºÅ 
-						str = str.erase(0,1);
-					}else if(str[0] != '0'){  //str1ÎªÕıÊıÊ±£¬¼ÓÉÏ·ûºÅ 
-						str = "-"+str;
-					}
+				this->c[i].set(str);
+				if(this->type == -1){// å½“ç›®æ ‡å‡½æ•°æœ‰æ±‚æœ€å°å€¼æ—¶ï¼Œè¦è¿›è¡Œæ¨¡å‹è½¬åŒ–ï¼Œè½¬æ¢ä¸ºæœ€å¤§å€¼ 
+					this->c[i].setOpposite();
 				}
-				Fraction C;
-				C.set(str);
-				this->c[i] = C;
 				this->basic_vector_list[i] = i; 
 			}
-			//¸üĞÂµ±Ç°µÄ±äÁ¿¸öÊı 
+			//æ›´æ–°å½“å‰çš„å˜é‡ä¸ªæ•° 
 			this->n += cnt; 
-			//ÈôÓĞ²»µÈºÅ³öÏÖ£¬ĞèÒª¼ÓÈëËÉ³Ú±äÁ¿£¬¶ÔÓ¦Ä¿±êÔ¼ÊøÏµÊıÖÃÎª0 
+			//è‹¥æœ‰ä¸ç­‰å·å‡ºç°ï¼Œéœ€è¦åŠ å…¥æ¾å¼›å˜é‡ï¼Œå¯¹åº”ç›®æ ‡çº¦æŸç³»æ•°ç½®ä¸º0 
 			for(int i = n ; i < this->n ; i++){
-				Fraction c_;
-				c_.set("0/1");
-				this->c[i] = c_;
-				this->cb[i] = c_;
- 				this->basic_vector_list[i] = i; 
+				this->c[i].set("0/1");
+				this->cb[i].set("0/1");
+				this->basic_vector_list[i] = i; 
 			}
 		}
 		
-		//ÏßĞÔ¹æ»®±ê×¼ĞÍµ¥´¿ĞÍËã·¨½â·¨
+		//çº¿æ€§è§„åˆ’æ ‡å‡†å‹å•çº¯å‹ç®—æ³•è§£æ³•
 		bool SimplexSolve(){
 			bool ans; 
-			//Ê×ÏÈ½«Ô¼ÊøÏµÊı¾ØÕó·Ö½â³É»ù¾ØÕóºÍ·Ç»ù¾ØÕó£¬Ö®ºóÕÒ³ö¶ÔÓ¦µÄ¿ÉĞĞ»ùÓë·Ç¿ÉĞĞ»ù 
-			//ÔÚÕâÀï»ù¾ØÕóÄ¬ÈÏ±ä»»³Éµ¥Î»Õó£¬ÒÔ·½±ãµ¥´¿ĞÍËã·¨µÄÏà¹Ø¾ØÕó¼ÆËã
-			//Ê×ÏÈ³õÊ¼»¯ÊÇ·ñÎªµ¥Î»ÏòÁ¿µÄ±êÖ¾Êı×éºÍÔªËØ1µÄÏÂ±êÊı×é 
-			//flag[i]ÊÇ¼ÇÂ¼µÚiÁĞÊÇ·ñÎªµ¥Î»ÏòÁ¿,index[i]¼ÇÂ¼µÚiÁĞÈôÎªµ¥Î»ÏòÁ¿Ê±1µÄÏÂ±ê 
+			//é¦–å…ˆå°†çº¦æŸç³»æ•°çŸ©é˜µåˆ†è§£æˆåŸºçŸ©é˜µå’ŒéåŸºçŸ©é˜µï¼Œä¹‹åæ‰¾å‡ºå¯¹åº”çš„å¯è¡ŒåŸºä¸éå¯è¡ŒåŸº 
+			//åœ¨è¿™é‡ŒåŸºçŸ©é˜µé»˜è®¤å˜æ¢æˆå•ä½é˜µï¼Œä»¥æ–¹ä¾¿å•çº¯å‹ç®—æ³•çš„ç›¸å…³çŸ©é˜µè®¡ç®—
+			//é¦–å…ˆåˆå§‹åŒ–æ˜¯å¦ä¸ºå•ä½å‘é‡çš„æ ‡å¿—æ•°ç»„å’Œå…ƒç´ 1çš„ä¸‹æ ‡æ•°ç»„ 
+			//flag[i]æ˜¯è®°å½•ç¬¬iåˆ—æ˜¯å¦ä¸ºå•ä½å‘é‡,index[i]è®°å½•ç¬¬iåˆ—è‹¥ä¸ºå•ä½å‘é‡æ—¶1çš„ä¸‹æ ‡ 
 			int flag[this->n],index[this->n];
-			//ÅĞ¶ÏÊÇ·ñ´æÔÚm¸öÏßĞÔÎŞ¹Øµ¥Î»ÏòÁ¿
+			//åˆ¤æ–­æ˜¯å¦å­˜åœ¨mä¸ªçº¿æ€§æ— å…³å•ä½å‘é‡
 			int cnt_unit_vector = this->exsitUnitMatrix(flag,index,this->n);
-			if(cnt_unit_vector != this->m){	//Î´ÕÒµ½m¸öÏßĞÔÎŞ¹Øµ¥Î»ÏòÁ¿ 
+			cout<<cnt_unit_vector<<endl; 
+			if(cnt_unit_vector != this->m){	//æœªæ‰¾åˆ°mä¸ªçº¿æ€§æ— å…³å•ä½å‘é‡ 
 				Transform(flag,index,this->n);
 			} 
-			//³õÊ¼»¯µäÊ½Êı×é 
+			//åˆå§‹åŒ–å…¸å¼æ•°ç»„ 
 			Fraction test_array[this->n];
 			for(int i = 0 ; i < this->n ; i++){
-				Fraction a;
-				a.set("0/1");
-				test_array[i] = a;
+				test_array[i].set("0/1");
 			}
 			this->Print();
 			while(1){
-				//¼ÆËã¼ìÑéÊıÏòÁ¿(µäÊ½)
+				//è®¡ç®—æ£€éªŒæ•°å‘é‡(å…¸å¼)
 				this->ComputeTestNumber(test_array,this->n);
-				cout<<endl<<"¼ìÑéÊıÎª£º"<<endl;
+				cout<<endl<<"æ£€éªŒæ•°ä¸ºï¼š"<<endl;
 				for(int i = 0 ; i < this->n ; i++){
 					cout<<test_array[i].result()<<" ";
 				}
 				cout<<endl;
-				//ÅĞ¶ÏµäÊ½ÊÇ·ñÈ«Ğ¡ÓÚ0
-				//cout<<"ÊÇ·ñÈ«²¿Ğ¡ÓÚµÈÓÚ0£º"<<this->isAllLessZero(test_array,this->n)<<endl;
+				//åˆ¤æ–­å…¸å¼æ˜¯å¦å…¨å°äº0
+				//cout<<"æ˜¯å¦å…¨éƒ¨å°äºç­‰äº0ï¼š"<<this->isAllLessZero(test_array,this->n)<<endl;
 				if(this->isAllLessZero(test_array,this->n)){
 					ans = true;
 					break;
 				}else{
-					//ÇóµÃ×î´ó¼ìÑéÊıµÄ¶ÔÓ¦µÄ±äÁ¿µÄÏÂ±ê(ÁĞÏÂ±ê)£¬½«¶ÔÓ¦µÄ±äÁ¿×÷Îª»»Èë»ù±äÁ¿ 
+					//æ±‚å¾—æœ€å¤§æ£€éªŒæ•°çš„å¯¹åº”çš„å˜é‡çš„ä¸‹æ ‡(åˆ—ä¸‹æ ‡)ï¼Œå°†å¯¹åº”çš„å˜é‡ä½œä¸ºæ¢å…¥åŸºå˜é‡ 
 					int max_col = this->Find_Max_TestNumber(test_array,this->n);
-					cout<<"ĞèÒª»»ÈëµÄÁĞ:"<<max_col+1<<endl;
-					//»ñµÃ¶ÔÓ¦µÄÔ¼Êø¾ØÕóÁĞÏòÁ¿
+					cout<<"éœ€è¦æ¢å…¥çš„åˆ—:"<<max_col+1<<endl;
+					//è·å¾—å¯¹åº”çš„çº¦æŸçŸ©é˜µåˆ—å‘é‡
 					Fraction p_index[this->m];
 					for(int i = 0 ; i < m ;i++){
 						p_index[i] = this->A[i][max_col]; 
 					}
-					//ÅĞ¶Ï¶ÔÓ¦Ô¼Êø¾ØÕóÁĞÏòÁ¿ÊÇ·ñÈ«Ğ¡ÓÚ0
-					if(this->isAllLessZero(p_index,this->m)){//È«Ğ¡ÓÚ0,Ã»ÓĞ×îÓÅ½â 
+					//åˆ¤æ–­å¯¹åº”çº¦æŸçŸ©é˜µåˆ—å‘é‡æ˜¯å¦å…¨å°äº0
+					if(this->isAllLessZero(p_index,this->m)){//å…¨å°äº0,æ²¡æœ‰æœ€ä¼˜è§£ 
 						ans = false;
 						break;
-					}else{//²»È«Ğ¡ÓÚ0£¬Ñ¡Ôñ×îĞ¡µÄ±äÁ¿×÷Îª»»³ö±äÁ¿
-						//Ê×ÏÈ½øĞĞ½«Ô¼Êø¾ØÕóÁĞÏòÁ¿ºÍ³£ÊıÏî½øĞĞÏà³ıµÃµ½¶ÔÓ¦½á¹û
+					}else{//ä¸å…¨å°äº0ï¼Œé€‰æ‹©æœ€å°çš„å˜é‡ä½œä¸ºæ¢å‡ºå˜é‡
+						//é¦–å…ˆè¿›è¡Œå°†çº¦æŸçŸ©é˜µåˆ—å‘é‡å’Œå¸¸æ•°é¡¹è¿›è¡Œç›¸é™¤å¾—åˆ°å¯¹åº”ç»“æœ
 						this->Divide_Array(p_index,this->m);
-						//cout<<endl<<"------"<<endl;
-						/*for(int i = 0 ; i < this->m ; i++){
-							cout<<p_index[i].result()<<" "; 
-						}
-						cout<<endl<<"------"<<endl;*/
-						//»ù¾ØÕóÓÉÓÚÒÑ¾­±»¸ßË¹ÏûÔª·¨×ª»¯ÎªÏà³Ëµ¥Î»¾ØÕó£¬Òò´Ë¼ò»¯ÁË¾ØÕóÔËËã
-						//Ñ°ÕÒthetaÏòÁ¿´óÓÚ0µÄ·ÖÁ¿ÖĞ×îĞ¡µÄ·ÖÁ¿ (ĞĞÏÂ±ê)
+						//åŸºçŸ©é˜µç”±äºå·²ç»è¢«é«˜æ–¯æ¶ˆå…ƒæ³•è½¬åŒ–ä¸ºç›¸ä¹˜å•ä½çŸ©é˜µï¼Œå› æ­¤ç®€åŒ–äº†çŸ©é˜µè¿ç®—
+						//å¯»æ‰¾thetaå‘é‡å¤§äº0çš„åˆ†é‡ä¸­æœ€å°çš„åˆ†é‡ (è¡Œä¸‹æ ‡)
 						int r = this->Find_Min_x(this->theta,this->m);
-						/*cout<<endl<<"*********"<<endl;
-						for(int i = 0 ; i < this->m ; i++){
-							cout<<this->theta[i].result()<<" "; 
-						}
-						cout<<endl<<"*********"<<endl;*/
 						int index = this->Find_BasicVector_Index(this->basic_vector_list[r]);
-						cout<<"ĞèÒª»»³öµÄÁĞ:"<<this->basic_vector_list[r]+1<<endl;
-						//¿ªÊ¼½«A[r][max_index]¶¨Î»Ö÷Ôª£¬½øĞĞÏûÔª£¬A[r][max_index]×ª»¯Îª1£¬
-						//¸ÃÁĞÆäÓàµÄÈ«²¿×ª»¯Îª0£¬³£ÊıÏîºÍ¾ØÕóÆäËûÔªËØ×ö³öÏàÓ¦±ä»¯¡£
+						cout<<"éœ€è¦æ¢å‡ºçš„åˆ—:"<<this->basic_vector_list[r]+1<<endl;
+						//å¼€å§‹å°†A[r][max_index]å®šä½ä¸»å…ƒï¼Œè¿›è¡Œæ¶ˆå…ƒï¼ŒA[r][max_index]è½¬åŒ–ä¸º1ï¼Œ
+						//è¯¥åˆ—å…¶ä½™çš„å…¨éƒ¨è½¬åŒ–ä¸º0ï¼Œå¸¸æ•°é¡¹å’ŒçŸ©é˜µå…¶ä»–å…ƒç´ åšå‡ºç›¸åº”å˜åŒ–ã€‚
 						this->transform(r,max_col);
-						//¸ü¸Ä»ùÏòÁ¿ÁĞ±í
+						//æ›´æ”¹åŸºå‘é‡åˆ—è¡¨
 						//int index = this->Find_BasicVector_Index(r);
 						this->basic_vector_list[index] = max_col;
-						//¸üĞÂ»ùÏòÁ¿¶ÔÓ¦µÄÄ¿±êÏµÊıÊı×é
+						//æ›´æ–°åŸºå‘é‡å¯¹åº”çš„ç›®æ ‡ç³»æ•°æ•°ç»„
 						this->cb[r] = this->c[max_col]; 
 					} 
 				}
@@ -196,44 +170,44 @@ class Simplex{
 			return ans;
 		} 
 		
-		//ÅĞ¶ÏÔ¼Êø¾ØÕóÖĞµÚcolÁĞÊÇ·ñÎªµ¥Î»ÏòÁ¿ 
+		//åˆ¤æ–­çº¦æŸçŸ©é˜µä¸­ç¬¬colåˆ—æ˜¯å¦ä¸ºå•ä½å‘é‡ 
 		int isUnitVector(int col){
-			int cnt0 = 0; 			//¼ÇÂ¼ÔªËØÎª0µÄ¸öÊı 
-			int index = -1;			//¼ÇÂ¼ÔªËØÎª1µÄÏÂ±ê 
+			int cnt0 = 0; 			//è®°å½•å…ƒç´ ä¸º0çš„ä¸ªæ•° 
+			int index = -1;			//è®°å½•å…ƒç´ ä¸º1çš„ä¸‹æ ‡ 
 			Fraction one;
 			one.set("1/1");
 			for(int i = 0; i < this->m ; i++){
-				//·¢ÏÖÔªËØ1 
+				//å‘ç°å…ƒç´ 1 
 				if(this->A[i][col].Compare2Fraction(one) == 0){
 					index = i;
 				}
-				//·¢ÏÖÔªËØ0 
+				//å‘ç°å…ƒç´ 0 
 				if(this->A[i][col].Compare2Zero() == 0){
 					cnt0++; 
 				}
 			}
-			//¸ÃÁĞ´æÔÚm-1µÄÔªËØ0£¬Ê£ÏÂÒ»¸öÔªËØ1£¬·µ»ØÔªËØ1µÄÏÂ±ê 
+			//è¯¥åˆ—å­˜åœ¨m-1çš„å…ƒç´ 0ï¼Œå‰©ä¸‹ä¸€ä¸ªå…ƒç´ 1ï¼Œè¿”å›å…ƒç´ 1çš„ä¸‹æ ‡ 
 			if(cnt0 == this->m-1 && index != -1){
 				return index;
-			}else{//·ñÔò·µ»Ø-1 
+			}else{//å¦åˆ™è¿”å›-1 
 				return -1;
 			}
 		}
 		
-		//ÅĞ¶ÏÊÇ·ñ´æÔÚm¸öÏßĞÔÎŞ¹Øµ¥Î»¾ØÕó 
+		//åˆ¤æ–­æ˜¯å¦å­˜åœ¨mä¸ªçº¿æ€§æ— å…³å•ä½çŸ©é˜µ 
 		int exsitUnitMatrix(int* flag,int* index,int n){
-			int cnt_unit_vector = 0;		//´æ´¢µ¥Î»ÏòÁ¿¸öÊı 
+			int cnt_unit_vector = 0;		//å­˜å‚¨å•ä½å‘é‡ä¸ªæ•°
 			int cnt = 0;
 			for(int i = n-1 ; i >= 0 ; i--){
-				//ÅĞ¶ÏµÚiÁĞÊÇ·ñµ¥Î»ÏòÁ¿ 
-				int _index = this->isUnitVector(i); 
-				if(_index == -1){	//²»ÊÇµ¥Î»ÏòÁ¿ 
+				//åˆ¤æ–­ç¬¬iåˆ—æ˜¯å¦å•ä½å‘é‡ 
+				int _index = this->isUnitVector(i);
+				if(_index == -1){	//ä¸æ˜¯å•ä½å‘é‡ 
 					flag[i] = 0;
 					index[i] = -1; 
-				}else{	//ÊÇµ¥Î»ÏòÁ¿£¬´æ´¢ÔªËØÎª1µÄÏÂ±êÓëÊÇµ¥Î»ÏòÁ¿µÄ±êÖ¾ 
+				}else{	//æ˜¯å•ä½å‘é‡ï¼Œå­˜å‚¨å…ƒç´ ä¸º1çš„ä¸‹æ ‡ä¸æ˜¯å•ä½å‘é‡çš„æ ‡å¿— 
 					flag[i] = 1;
 					index[i] = _index;
-					//ÒÀ´Î¼ÇÂ¼»ùÏòÁ¿ 
+					//ä¾æ¬¡è®°å½•åŸºå‘é‡ 
 					this->basic_vector_list[cnt++] = i; 
 					cnt_unit_vector++;
 				}
@@ -244,29 +218,29 @@ class Simplex{
 		
 		void Transform(int* flag,int* index,int n){
 			set<int> s;
-			//½«ÒÑ¾­ÊÇµ¥Î»ÏòÁ¿µÄÁĞÏòÁ¿µÄ1µÄÏÂ±ê¼ÓÈë¼¯ºÏ 
+			//å°†å·²ç»æ˜¯å•ä½å‘é‡çš„åˆ—å‘é‡çš„1çš„ä¸‹æ ‡åŠ å…¥é›†åˆ 
 			for(int i = 0 ; i < n ; i++){
 				if(flag[i] == 1){
 					s.insert(index[i]); 
 				}
 			}
 			int cnt = 0;
-			//¿ªÊ¼±éÀúÃ¿ÁĞ£¬µ÷Õû³öm¸öĞÔÎŞ¹Øµ¥Î»ÏòÁ¿ 
+			//å¼€å§‹éå†æ¯åˆ—ï¼Œè°ƒæ•´å‡ºmä¸ªæ€§æ— å…³å•ä½å‘é‡ 
 			for(int i = this->n-1; i >= 0 && s.size() != this->m; i--){
-				if(flag[i] == 1){	//µÚiÁĞÊÇµ¥Î»ÏòÁ¿ 
-					this->basic_vector_list[cnt] = i;		//°Ñ¸ÃÏòÁ¿¼ÓÈëºòÑ¡»ùÏòÁ¿ÁĞ±íÖĞ
-					this->cb[cnt] = this->c[i];				//°ÑÏàÓ¦µÄÄ¿±êº¯ÊıÏµÊı¼ÓÈë»ùÏòÁ¿¶ÔÓ¦µÄÄ¿±êÏµÊıÊı×éµ±ÖĞ
+				if(flag[i] == 1){	//ç¬¬iåˆ—æ˜¯å•ä½å‘é‡ 
+					this->basic_vector_list[cnt] = i;		//æŠŠè¯¥å‘é‡åŠ å…¥å€™é€‰åŸºå‘é‡åˆ—è¡¨ä¸­
+					this->cb[cnt] = this->c[i];				//æŠŠç›¸åº”çš„ç›®æ ‡å‡½æ•°ç³»æ•°åŠ å…¥åŸºå‘é‡å¯¹åº”çš„ç›®æ ‡ç³»æ•°æ•°ç»„å½“ä¸­
 					cnt++; 
 					continue;
-				}else{				//µÚiÁĞ²»ÊÇµ¥Î»ÏòÁ¿
+				}else{				//ç¬¬iåˆ—ä¸æ˜¯å•ä½å‘é‡
 					for(int j = 0 ; j < this->m ; j++){
-						if(s.find(j) != s.end()){  //¼¯ºÏÖĞº¬ÓĞÏÂ±êj£¬¼´ÒÑ¾­´æÔÚÔªËØ1ÔÚµÚj¸öÎ»ÖÃµÄµ¥Î»ÏòÁ¿ 
+						if(s.find(j) != s.end()){  //é›†åˆä¸­å«æœ‰ä¸‹æ ‡jï¼Œå³å·²ç»å­˜åœ¨å…ƒç´ 1åœ¨ç¬¬jä¸ªä½ç½®çš„å•ä½å‘é‡ 
 							continue;
-						}else{//²»´æÔÚ£¬ÄÇÃ´A[j][i]ÎªÖ÷Ôª,°Ñ¸ÃÁĞµ÷ÕûÎªµ¥Î»ÏòÁ¿ 
+						}else{//ä¸å­˜åœ¨ï¼Œé‚£ä¹ˆA[j][i]ä¸ºä¸»å…ƒ,æŠŠè¯¥åˆ—è°ƒæ•´ä¸ºå•ä½å‘é‡ 
 							this->transform(j,i);
 							s.insert(j);
-							this->basic_vector_list[cnt] = i;		//°Ñ¸ÃÏòÁ¿¼ÓÈëºòÑ¡»ùÏòÁ¿ÁĞ±íÖĞ
-							this->cb[cnt] = this->c[i];				//°ÑÏàÓ¦µÄÄ¿±êº¯ÊıÏµÊı¼ÓÈë»ùÏòÁ¿¶ÔÓ¦µÄÄ¿±êÏµÊıÊı×éµ±ÖĞ
+							this->basic_vector_list[cnt] = i;		//æŠŠè¯¥å‘é‡åŠ å…¥å€™é€‰åŸºå‘é‡åˆ—è¡¨ä¸­
+							this->cb[cnt] = this->c[i];				//æŠŠç›¸åº”çš„ç›®æ ‡å‡½æ•°ç³»æ•°åŠ å…¥åŸºå‘é‡å¯¹åº”çš„ç›®æ ‡ç³»æ•°æ•°ç»„å½“ä¸­
 							cnt++; 
 							break;
 						}
@@ -275,7 +249,7 @@ class Simplex{
 			} 
 		} 
 		
-		//¼ÆËã¼ìÑéÊı£¨µäÊ½£© 
+		//è®¡ç®—æ£€éªŒæ•°ï¼ˆå…¸å¼ï¼‰ 
 		void ComputeTestNumber(Fraction* test_array,int n){
 			for(int i = 0 ; i < this->n ; i++){
 				test_array[i] = this->c[i];
@@ -287,16 +261,11 @@ class Simplex{
 			} 
 		}
 		
-		//ÕâÊÇÅĞ¶ÏÏòÁ¿ÊÇÊÇ·ñÈ«Îª0µÄº¯Êı 
+		//è¿™æ˜¯åˆ¤æ–­å‘é‡æ˜¯æ˜¯å¦å…¨ä¸º0çš„å‡½æ•° 
 		int isAllLessZero(Fraction* array,int size){
-			/*cout<<endl<<"=========="<<endl;
-			for(int i = 0 ; i < size ; i++){
-				cout<<array[i].Compare2Zero()<<" ";
-			}
-			cout<<endl<<"============="<<endl;*/
 			int flag = 1;
 			for(int i = 0 ; i < size ; i++){
-				if(array[i].Compare2Zero() == 1){//¼ìÑéÊı´óÓÚ0 
+				if(array[i].Compare2Zero() == 1){//æ£€éªŒæ•°å¤§äº0 
 					flag = 0;
 					break;
 				}
@@ -304,73 +273,69 @@ class Simplex{
 			return flag;
 		}		
 		
-		//Ñ°ÕÒ¼ìÑéÊıÖĞµÄ×î´óÖµ
+		//å¯»æ‰¾æ£€éªŒæ•°ä¸­çš„æœ€å¤§å€¼
 		int Find_Max_TestNumber(Fraction* test_array,int size){
 			int index = 0;
 			Fraction max;
 			max.set("0/1"); 
 			for(int i = 0 ; i < size ; i++){
-				if(test_array[i].Compare2Zero() <= 0){//²»´óÓÚ0µÄ¼ìÑéÊıÌø¹ı 
+				if(test_array[i].Compare2Zero() <= 0){//ä¸å¤§äº0çš„æ£€éªŒæ•°è·³è¿‡ 
 					continue;
-				}else{//¼ìÑéÊı´óÓÚ0Ê±
+				}else{//æ£€éªŒæ•°å¤§äº0æ—¶
 					int flag = test_array[i].Compare2Fraction(max);
-					if(flag == 1){//µ±Ç°¼ìÑéÊı±Èmax´ó£¬¸üĞÂmaxÓëÏÂ±ê 
+					if(flag == 1){//å½“å‰æ£€éªŒæ•°æ¯”maxå¤§ï¼Œæ›´æ–°maxä¸ä¸‹æ ‡ 
 						max = test_array[i];
 						index = i;
 					}
 				}
-				//cout<<"max="<<max.result()<<" index="<<index<<endl;
 			}
-			return index;		//·µ»ØÏÂ±ê 
+			return index;		//è¿”å›ä¸‹æ ‡ 
 		}
 		
-		//Ñ°ÕÒ³ö×îĞ¡±ÈÖµ¶ÔÓ¦µÄÏÂ±ê 
+		//å¯»æ‰¾å‡ºæœ€å°æ¯”å€¼å¯¹åº”çš„ä¸‹æ ‡ 
 		int Find_Min_x(Fraction* theta,int size){
 			int index = 0;
 			Fraction min;
-			min.set("9999999/1");			//¶¨ÒåÎª×îÕı´óÊı 
-			//cout<<index;
-			//cout<<"min="<<min.result()<<" index="<<index<<endl;
+			min.set("9999999/1");			//å®šä¹‰ä¸ºæœ€æ­£å¤§æ•° 
 			for(int i = 0 ; i < size ; i++){
-				if(theta[i].Compare2Zero() <= 0){//²»´óÓÚ0µÄ¼ìÑéÊıÌø¹ı 
+				if(theta[i].Compare2Zero() <= 0){//ä¸å¤§äº0çš„æ£€éªŒæ•°è·³è¿‡ 
 					continue;
-				}else{//¼ìÑéÊı´óÓÚ0Ê±
+				}else{//æ£€éªŒæ•°å¤§äº0æ—¶
 					int flag = theta[i].Compare2Fraction(min);
-					if(flag == -1){//µ±Ç°¼ìÑéÊı±ÈminĞ¡£¬¸üĞÂminÓëÏÂ±ê 
+					if(flag == -1){//å½“å‰æ£€éªŒæ•°æ¯”minå°ï¼Œæ›´æ–°minä¸ä¸‹æ ‡ 
 						min = theta[i];
 						index = i;
 					}	
-				}
-				//cout<<"min="<<min.result()<<" index="<<index<<endl;	
+				}	
 			}
-			return index;		//·µ»ØÏÂ±ê 
+			return index;		//è¿”å›ä¸‹æ ‡ 
 		} 
 		
-		//ÔÚÃ¿ÁĞÖĞ·¢Ñ°ÕÒ1µÄÏÂ±ê 
+		//åœ¨æ¯åˆ—ä¸­å‘å¯»æ‰¾1çš„ä¸‹æ ‡ 
 		int FindOne(int col){
 			int cnt0 = 0; 
 			int index = -1;
 			Fraction one;
 			one.set("1/1");
 			for(int i = 0; i < this->m ; i++){
-				//·¢ÏÖÔªËØ1 
+				//å‘ç°å…ƒç´ 1 
 				if(this->A[i][col].Compare2Fraction(one) == 0){
 					index = i;
 				}
-				//·¢ÏÖÔªËØ0 
+				//å‘ç°å…ƒç´ 0 
 				if(this->A[i][col].Compare2Zero() == 0){
 					cnt0++; 
 				}
 			}
-			//¸ÃÁĞ´æÔÚm-1µÄÔªËØ0£¬Ê£ÏÂÒ»¸öÔªËØ1£¬·µ»ØÔªËØ1µÄÏÂ±ê 
+			//è¯¥åˆ—å­˜åœ¨m-1çš„å…ƒç´ 0ï¼Œå‰©ä¸‹ä¸€ä¸ªå…ƒç´ 1ï¼Œè¿”å›å…ƒç´ 1çš„ä¸‹æ ‡ 
 			if(cnt0 == this->m-1 && index != -1){
 				return index;
-			}else{//·ñÔò·µ»Ø-1 
+			}else{//å¦åˆ™è¿”å›-1 
 				return -1;
 			}
 		}
 		
-		//Ñ°ÕÒ»ù±äÁ¿ÁĞ±íÖĞkËùÔÚµÄÏÂ±ê 
+		//å¯»æ‰¾åŸºå˜é‡åˆ—è¡¨ä¸­kæ‰€åœ¨çš„ä¸‹æ ‡ 
 		int Find_BasicVector_Index(int k){
 			for(int i = 0 ; i < this->m ; i++){
 				if(this->basic_vector_list[i] == k){
@@ -379,53 +344,53 @@ class Simplex{
 			} 
 		}	
 				
-		// ¼ÆËãÔ¼Êø¾ØÕóÁĞÏòÁ¿Óë³£ÊıÏîÏà³ıµÄ½á¹û 
+		// è®¡ç®—çº¦æŸçŸ©é˜µåˆ—å‘é‡ä¸å¸¸æ•°é¡¹ç›¸é™¤çš„ç»“æœ 
 		void Divide_Array(Fraction* pk,int size){
 			for(int i = 0 ; i < size ; i++){
-				//ÓÉÓÚFractionÖĞ¶ÔÓÚ³ıÊıÎª0µÄ½á¹û¶¨ÒåÎª¡°-32768/1¡±
+				//ç”±äºFractionä¸­å¯¹äºé™¤æ•°ä¸º0çš„ç»“æœå®šä¹‰ä¸ºâ€œ-32768/1â€
 				this->theta[i] = this->theta[i].DIV(this->b[i],pk[i]);
 			}
 		}
 		
-		//½«A[row][col]¶¨Î»Ö÷Ôªºó£¬½«Æä×ª»¯Îª1£¬¸ÃÁĞÆäÓàÎª×ª»¯Îª0£¬³£ÊıÏîºÍÆäÓàÔ¼Êø¾ØÕó×öÏàÓ¦´¦Àí 
+		//å°†A[row][col]å®šä½ä¸»å…ƒåï¼Œå°†å…¶è½¬åŒ–ä¸º1ï¼Œè¯¥åˆ—å…¶ä½™ä¸ºè½¬åŒ–ä¸º0ï¼Œå¸¸æ•°é¡¹å’Œå…¶ä½™çº¦æŸçŸ©é˜µåšç›¸åº”å¤„ç† 
 		void transform(int row,int col){
-			//Ê×ÏÈ´¦ÀírowÕâÒ»ĞĞµÄÊı¾İ 
-			//A[row][col]×÷ÎªÏµÊı 
+			//é¦–å…ˆå¤„ç†rowè¿™ä¸€è¡Œçš„æ•°æ® 
+			//A[row][col]ä½œä¸ºç³»æ•° 
 			Fraction rate = this->A[row][col];
-			//´¦ÀírowÕâĞĞµÄ³£ÊıÏîbºÍÔ¼Êø¾ØÕóA 
+			//å¤„ç†rowè¿™è¡Œçš„å¸¸æ•°é¡¹bå’Œçº¦æŸçŸ©é˜µA 
 			this->b[row] = this->b[row].DIV(this->b[row],rate); 
 			for(int i = 0 ; i < this->n; i++){
 				this->A[row][i] = this->A[row][i].DIV(this->A[row][i],rate);
 			} 
-			//´¦ÀíÊ£ÓàµÄÔªËØ
+			//å¤„ç†å‰©ä½™çš„å…ƒç´ 
 			for(int i = 0 ; i < this->m; i++){
-				if(i == row){//±éÀúµ½Ö÷ÔªÄÇĞĞÌø¹ı 
+				if(i == row){//éå†åˆ°ä¸»å…ƒé‚£è¡Œè·³è¿‡ 
 					continue;
 				}
 				Fraction rate = this->A[i][col];
 				int flag = rate.Compare2Zero();
-				if(flag == 0){	//A[i][col]Îª0£¬Ìø¹ıÕâĞĞ 
+				if(flag == 0){	//A[i][col]ä¸º0ï¼Œè·³è¿‡è¿™è¡Œ 
 					continue;
-				}else{	//A[i][col]²»Îª0£¬rate=A[i][col]
+				}else{	//A[i][col]ä¸ä¸º0ï¼Œrate=A[i][col]
 					Fraction tmp; 
-					//¶ÔµÚiĞĞ½øĞĞĞĞ±ä»» 
+					//å¯¹ç¬¬iè¡Œè¿›è¡Œè¡Œå˜æ¢ 
 					for(int j = 0 ; j < this->n ; j++){
 						tmp = tmp.MUL(this->A[row][j],rate);
 						this->A[i][j] = this->A[i][j].SUB(this->A[i][j],tmp);
 					}
-					//¶Ô³£ÊıÏî½øĞĞ±ä»» 
+					//å¯¹å¸¸æ•°é¡¹è¿›è¡Œå˜æ¢ 
 					tmp = tmp.MUL(this->b[row],rate);
 					this->b[i] = this->b[i].SUB(this->b[i],tmp);
 				}
 			} 
 		}
 		
-		//ÔÚA[row][col]ËùÔÚÁĞËÑË÷·Ç¸ºÔªËØ 
+		//åœ¨A[row][col]æ‰€åœ¨åˆ—æœç´¢éè´Ÿå…ƒç´  
 		int Search_Col(int row,int col){
-			int index = -1;		//indexÓÃÀ´´æ´¢Ñ°ÕÒµÄÔªËØµÄĞĞ×ø±ê£¬-1´ú±íÃ»ÓĞÕÒµ½ 
-			//´Ó×îºóÒ»ĞĞ¿ªÊ¼ËÑË÷£¬½«µ±Ç°ĞĞ·Åµ½×îºóÃæ£¬·ÀÖ¹Ö®ºó¶à´Î½»»»²Ù×÷ 
+			int index = -1;		//indexç”¨æ¥å­˜å‚¨å¯»æ‰¾çš„å…ƒç´ çš„è¡Œåæ ‡ï¼Œ-1ä»£è¡¨æ²¡æœ‰æ‰¾åˆ° 
+			//ä»æœ€åä¸€è¡Œå¼€å§‹æœç´¢ï¼Œå°†å½“å‰è¡Œæ”¾åˆ°æœ€åé¢ï¼Œé˜²æ­¢ä¹‹åå¤šæ¬¡äº¤æ¢æ“ä½œ 
 			for(int i = this->m-1 ; i > row ; i--){
-				if(this->A[i][col].Compare2Zero() != 0){   //ÕÒµ½²»Îª0µÄÔªËØ 
+				if(this->A[i][col].Compare2Zero() != 0){   //æ‰¾åˆ°ä¸ä¸º0çš„å…ƒç´  
 					index = i;
 					break;
 				}
@@ -433,12 +398,12 @@ class Simplex{
 			return index;
 		} 
 		
-		//ÔÚA[row][col]ËùÔÚĞĞËÑË÷·Ç¸ºÔªËØ 
+		//åœ¨A[row][col]æ‰€åœ¨è¡Œæœç´¢éè´Ÿå…ƒç´  
 		int Search_Row(int row,int col){
-			int index = -1;		//indexÓÃÀ´´æ´¢Ñ°ÕÒµÄÔªËØµÄÁĞ×ø±ê£¬-1´ú±íÃ»ÓĞÕÒµ½ 
-			//´Ó×îºóÒ»ÁĞ¿ªÊ¼ËÑË÷£¬½«µ±Ç°ÁĞ·Åµ½×îºóÃæ£¬·ÀÖ¹Ö®ºó¶à´Î½»»»²Ù×÷ 
+			int index = -1;		//indexç”¨æ¥å­˜å‚¨å¯»æ‰¾çš„å…ƒç´ çš„åˆ—åæ ‡ï¼Œ-1ä»£è¡¨æ²¡æœ‰æ‰¾åˆ° 
+			//ä»æœ€åä¸€åˆ—å¼€å§‹æœç´¢ï¼Œå°†å½“å‰åˆ—æ”¾åˆ°æœ€åé¢ï¼Œé˜²æ­¢ä¹‹åå¤šæ¬¡äº¤æ¢æ“ä½œ 
 			for(int i = this->n-1 ; i > col ; i--){
-				if(this->A[row][i].Compare2Zero() != 0){   //ÕÒµ½²»Îª0µÄÔªËØ 
+				if(this->A[row][i].Compare2Zero() != 0){   //æ‰¾åˆ°ä¸ä¸º0çš„å…ƒç´  
 					index = i;
 					break;
 				}
@@ -446,98 +411,105 @@ class Simplex{
 			return index;
 		} 
 		
-		//°´ĞĞ½»»» 
+		//æŒ‰è¡Œäº¤æ¢ 
 		void Swap_Row(int row1,int row2){
-			//½«ÏÂ±êÎªrow1ºÍrow2½øĞĞ½»»» 
+			//å°†ä¸‹æ ‡ä¸ºrow1å’Œrow2è¿›è¡Œäº¤æ¢ 
 			for(int i = 0 ; i < this->n ; i++){
 				Fraction tmp = this->A[row1][i];
 				this->A[row1][i] = this->A[row2][i];
 				this->A[row2][i] = tmp;
 			}
-			//¶Ô³£ÊıÏîÊı×é¶ÔÓ¦ÔªËØ½øĞĞµ÷Õû
+			//å¯¹å¸¸æ•°é¡¹æ•°ç»„å¯¹åº”å…ƒç´ è¿›è¡Œè°ƒæ•´
 			Fraction tmp = this->b[row1];
 			this->b[row1] = this->b[row2];
 			this->b[row2] = tmp; 
 		}
 		
-		//Á½ÁĞ½»»» 
+		//ä¸¤åˆ—äº¤æ¢ 
 		void Swap_Col(int col1,int col2){
+			//äº¤æ¢çº¦æŸç³»æ•°çŸ©é˜µç¬¬col1åˆ—å’Œç¬¬col2åˆ— 
 			for(int i = 0 ; i < this->m ; i++){
 				Fraction tmp = this->A[i][col1];
 				this->A[i][col1] = this->A[i][col2];
 				this->A[i][col2] = tmp;
 			}
-			//½«Ä¿±êÄ¿±êÏµÊı½øĞĞ»¥»» 
+			//å°†ç›®æ ‡ç›®æ ‡ç³»æ•°è¿›è¡Œäº’æ¢ 
 			Fraction tmp = this->c[col1];
 			this->c[col1] = this->c[col2];
 			this->c[col2] = tmp;
-			//±äÁ¿ÁĞ±í½»»»
+			//å˜é‡åˆ—è¡¨äº¤æ¢
 			int tmp1 = this->basic_vector_list[col1];
 			this->basic_vector_list[col1] = this->basic_vector_list[col2];
 			this->basic_vector_list[col2] = tmp1; 
 		}
 		
-		//¼ÆËã×îÓÅ½â 
+		//è®¡ç®—æœ€ä¼˜è§£ 
 		Fraction getopt(){
+			//åˆå§‹åŒ–æœ€ä¼˜è§£å‘é‡ä¸º0 
 			Fraction x[this->n];
 			for(int i = 0 ; i < this->n ; i++){
 				Fraction tmp;
 				tmp.set("0/1");
 				x[i] = tmp;
 			}
-			cout<<"»ùÏòÁ¿Îª:"<<endl; 
+			cout<<"åŸºå‘é‡ä¸º:"<<endl; 
 			for(int i = 0 ; i < this->m ; i++){
 				cout<<"x"<<this->basic_vector_list[i]+1<<" "; 
 			}
 			cout<<endl;
-			//¶Ô»ùÏòÁ¿½øĞĞ±éÀú 
+			//è·å–æœ€ä¼˜è§£å‘é‡ 
 			for(int i = 0 ; i < this->m ; i++){
-				//»ñµÃ»ù±äÁ¿ÏÂ±ê 
+				//è·å¾—åŸºå˜é‡ä¸‹æ ‡ 
 				int j = this->basic_vector_list[i];
-				//»ù±äÁ¿¸³Öµ 
+				//åŸºå˜é‡èµ‹å€¼ 
 				x[j] = this->b[i]; 
 			}
-			cout<<"×îÓÅ½âÏòÁ¿Îª:"<<endl; 
+			cout<<"æœ€ä¼˜è§£å‘é‡ä¸º:"<<endl; 
 			for(int i = 0 ; i < this->n ; i ++){
 				cout<<x[i].result()<<" ";
 			}
 			cout<<endl;
-			Fraction opt;//×îÓÅ½â 
-			opt.set("0/1");							
+			Fraction opt;//æœ€ä¼˜è§£ 
+			opt.set("0/1");	
+			//è®¡ç®—æœ€ä¼˜å€¼						
 			for(int i = 0 ; i < this->n ; i++){
 				Fraction tmp;
-				tmp.set("0/1");
 				tmp= tmp.MUL(this->c[i],x[i]);
 				opt = opt.ADD(opt,tmp);
 			}
-			cout<<"×îÓÅ½âÎª£º"<<opt.result()<<endl;
+			//è‹¥ç›®æ ‡æ˜¯æœ€å°åŒ–ï¼Œç”±äºä½†æ•°å•çº¯å‹ç®—æ³•æ˜¯è§£æ ‡å‡†å‹ï¼Œ
+			//å› æ­¤éœ€è¦åœ¨å¯¹ç»“æœå–ç›¸åæ•° 
+			if(this->type == -1){
+				opt.setOpposite();
+			} 
+			cout<<"æœ€ä¼˜è§£ä¸ºï¼š"<<opt.result()<<endl;
 			return  opt; 
 		}
 		
-		//´òÓ¡º¯Êı 
+		//æ‰“å°å‡½æ•° 
 		void Print(){
-			cout<<"Ô¼Êø¾ØÕóÎª£º"<<endl;
+			cout<<"çº¦æŸçŸ©é˜µä¸ºï¼š"<<endl;
 			for(int i = 0 ; i < this->m ; i++){
 				for(int j = 0 ; j < this->n ; j++){
 					cout<<this->A[i][j].result()<<" ";
 				}
 				cout<<endl;
 			}
-			cout<<"³£ÊıÏîÎª£º"<<endl;
+			cout<<"å¸¸æ•°é¡¹ä¸ºï¼š"<<endl;
 			for(int i = 0 ; i < this->n ; i++){
 				cout<<this->b[i].result()<<" ";
 			} 
 			cout<<endl;
-			cout<<"Ä¿±êÏµÊı£¨c£©Îª£º"<<endl;
-			for(int i = 0 ; i < this->m ; i++){
+			cout<<"ç›®æ ‡ç³»æ•°ï¼ˆcï¼‰ä¸ºï¼š"<<endl;
+			for(int i = 0 ; i < this->n ; i++){
 				cout<<this->c[i].result()<<" ";
 			} 
 			cout<<endl;
-			cout<<"Ä¿±êÏµÊı£¨cb£©Îª£º"<<endl;
+			cout<<"ç›®æ ‡ç³»æ•°ï¼ˆcbï¼‰ä¸ºï¼š"<<endl;
 			for(int i = 0 ; i < this->m ; i++){
 				cout<<this->cb[i].result()<<" ";
 			}
-			cout<<endl<<"»ùÏòÁ¿×é:"<<endl;
+			cout<<endl<<"åŸºå‘é‡ç»„:"<<endl;
 			for(int i = 0 ; i < this->m ; i++){
 				cout<<"x"<<this->basic_vector_list[i]+1<<" ";
 			}
@@ -553,7 +525,7 @@ int main()
 	if(flag){
 		Fraction ans = simplex.getopt(); 	
 	}else{
-		cout<<"ÎŞ×îÓÅ½â"<<endl; 
+		cout<<"æ— æœ€ä¼˜è§£"<<endl; 
 	}
 	
 	return 0;
