@@ -37,10 +37,7 @@ class Fraction{
 				}
 			}
 			this->setFenmu(fenmu);
-			this->setFenzi(fenzi);
-			//this->fenmu = fenmu;
-			//this->fenzi = fenzi;
-			//cout<<this->fenmu<<" "<<this->fenzi<<endl; 
+			this->setFenzi(fenzi); 
 		}
 		
 		void setFenzi(string fenzi){
@@ -62,8 +59,6 @@ class Fraction{
 		//分数取反 
 		void setOpposite(){
 			int flag = this->Compare2Zero();
-			//cout<<this->result()<<endl;
-			//cout<<flag<<endl;
 			//为0不需要置反，保持原样即可
 			//下面主要考虑负0的情况 
 			if(flag != 0){
@@ -78,9 +73,6 @@ class Fraction{
 		} 
 		
 		string result(){
-			/*if(this->fenzi.compare("0") == 0 && this->fenmu.compare("0") != 0){
-				return "0";
-			}*/
 			string res = this->fenzi;
 			if(this->fenmu.compare("0") != 0){
 				if(this->fenmu.compare("1") != 0){
@@ -162,8 +154,6 @@ class Fraction{
 				fenmu = num1.fenmu;									//保留分母 
 				fenzi = this->ADD_INT(num1.fenzi,num2.fenzi);		//计算分子 
 				gcd = this->gcd(fenmu,fenzi);						//计算最大公约数
-				/*cout<<fenzi<<endl;
-				cout<<gcd<<endl;*/ 
 				fenmu = this->DIV_INT(fenmu,gcd);					//约分后的分母
 				fenzi = this->DIV_INT(fenzi,gcd);					//约分后的分子
 			}else{//分母不相等 
@@ -178,9 +168,6 @@ class Fraction{
 				}
 			}
 			Fraction result;
-			/*cout<<"fenzi:"<<fenzi<<endl;
-			cout<<"fenmu:"<<fenmu<<endl; 
-			cout<<"gcd:"<<gcd<<endl;*/
 			result.set(fenmu,fenzi); 
 			return result;
 		}
@@ -208,13 +195,10 @@ class Fraction{
 			if(num1.fenmu.compare(num2.fenmu) == 0){//两个分母相等 
 				fenmu = num1.getFenmu();									//保留分母 
 				fenzi = this->SUB_INT(num1.getFenzi(),num2.getFenzi());		//计算分子 
-				//cout<<fenmu<<" "<<fenzi<<endl;
 				gcd = this->gcd(fenmu,fenzi);						//计算最大公约数 
 				if(gcd.compare("1") != 0){
 					fenmu = this->DIV_INT(fenmu,gcd);					//约分后的分母
 					fenzi = this->DIV_INT(fenzi,gcd);					//约分后的分子	
-					/*cout<<"gcd="<<gcd<<endl;
-					cout<<fenmu<<" "<<fenzi<<endl;*/
 				}
 			}else{//分母不相等 
 				string fenzi1 = this->MUL_INT(num1.fenzi,num2.fenmu);			//计算通分后的分子1 
@@ -227,10 +211,6 @@ class Fraction{
 					fenzi = this->DIV_INT(fenzi,gcd);								//计算通分后的分子 	
 				}
 			}
-			/*cout<<num1.result()<<"-"<<num2.result()<<"="<<endl;
-			cout<<fenmu<<endl;
-			cout<<fenzi<<endl;
-			cout<<gcd<<endl;*/ 
 			Fraction result;
 			result.set(fenmu,fenzi);
 			return result;
@@ -255,7 +235,6 @@ class Fraction{
 				fenmu = this->MUL_INT(num1.fenmu,num2.fenmu);
 			}
 			//计算分子
-			//cout<<num1.fenzi<<" "<<num2.fenzi<<endl;
 			if(num1.fenzi.compare("1") == 0 && num2.fenzi.compare("1") == 0){			//两个分子全为1 
 				fenzi = "1"; 
 			}else if(num1.fenzi.compare("1") == 0 && num2.fenzi.compare("1") != 0){		//num1分子为1 
@@ -694,15 +673,9 @@ class Fraction{
 		//两个分数之间的比较
 		int Compare2Fraction(Fraction fraction){
 			Fraction ans,tmp;
-			/*cout<<"/////////////////////////"<<endl;
-			cout<<"当前分数："<<this->result()<<endl;
-			cout<<"作对比的分数:"<<fraction.result()<<endl;*/
 			tmp.set(this->getFenmu(),this->getFenzi());
 			//减后的结果与0作对比就是两个分数之间的大小关系 
 			ans = ans.SUB(tmp,fraction); 
-			/*cout<<"相减结果为："<<ans.result()<<endl; 
-			cout<<"对比结果为："<<ans.Compare2Zero()<<endl;
-			cout<<"/////////////////////////"<<endl;*/
 			return ans.Compare2Zero();
 		} 
 };
