@@ -4,10 +4,10 @@ using namespace std;
 
 class Fraction{
 	private:
-		string fenmu;			//åˆ†æ¯ 
-		string fenzi;			//åˆ†å­ 
+		string fenmu;			//·ÖÄ¸ 
+		string fenzi;			//·Ö×Ó 
 	public:
-		//åˆ†æ•°ç±»çš„æ„é€ å‡½æ•° 
+		//·ÖÊıÀàµÄ¹¹Ôìº¯Êı 
 		void set(string str){
 			if(str.find('/') == string::npos){
 				this->fenmu = "1";
@@ -21,16 +21,16 @@ class Fraction{
 			}
 		}
 		
-		//åˆ†æ•°ç±»çš„è®¾ç½®å‡½æ•° 
+		//·ÖÊıÀàµÄÉèÖÃº¯Êı 
 		void set(string fenmu,string fenzi){ 
-			if(fenmu[0] == '-' && fenzi[0] == '-'){			// åˆ†å­åˆ†æ¯åŒä¸ºè´Ÿ 
+			if(fenmu[0] == '-' && fenzi[0] == '-'){			// ·Ö×Ó·ÖÄ¸Í¬Îª¸º 
 				fenmu = fenmu.erase(0,1);
 				fenzi = fenzi.erase(0,1);
-			}else if(fenmu[0] == '-' && fenzi[0] != '-'){	//åˆ†æ¯ä¸ºè´Ÿ åˆ†å­ä¸ºæ­£
+			}else if(fenmu[0] == '-' && fenzi[0] != '-'){	//·ÖÄ¸Îª¸º ·Ö×ÓÎªÕı
 				fenmu = fenmu.erase(0,1);
 				fenzi = "-"+fenzi;
 			}
-			if(fenzi[0] == '-'){			//åˆ†å­ä¸º0æ—¶ï¼Œå‰é¢æœ‰è´Ÿå· 
+			if(fenzi[0] == '-'){			//·Ö×ÓÎª0Ê±£¬Ç°ÃæÓĞ¸ººÅ 
 				string tmp = fenzi.substr(1,fenzi.length()-1);
 				if(tmp.compare("0") == 0){
 					fenzi = tmp;
@@ -56,16 +56,16 @@ class Fraction{
 			return this->fenmu; 
 		}
 		
-		//åˆ†æ•°å–å 
+		//·ÖÊıÈ¡·´ 
 		void setOpposite(){
 			int flag = this->Compare2Zero();
-			//ä¸º0ä¸éœ€è¦ç½®åï¼Œä¿æŒåŸæ ·å³å¯
-			//ä¸‹é¢ä¸»è¦è€ƒè™‘è´Ÿ0çš„æƒ…å†µ 
+			//Îª0²»ĞèÒªÖÃ·´£¬±£³ÖÔ­Ñù¼´¿É
+			//ÏÂÃæÖ÷Òª¿¼ÂÇ¸º0µÄÇé¿ö 
 			if(flag != 0){
 				string fenzi = this->getFenzi();
-				if(flag == -1){//ä¸ºè´Ÿæ•°æ—¶ 
-					fenzi = fenzi.erase(0,1);		//å»æ‰å‰é¢çš„ç¬¦å· 
-				}else if(flag == 1){//ä¸ºæ­£æ•°æ—¶ 
+				if(flag == -1){//Îª¸ºÊıÊ± 
+					fenzi = fenzi.erase(0,1);		//È¥µôÇ°ÃæµÄ·ûºÅ 
+				}else if(flag == 1){//ÎªÕıÊıÊ± 
 					fenzi = "-"+fenzi;
 				}
 				this->setFenzi(fenzi); 
@@ -82,35 +82,35 @@ class Fraction{
 			return res; 
 		}
 		
-		//è¿™æ˜¯æ¯”è¾ƒä¸¤ä¸ªæ­£æ•°ä¹‹é—´å¤§å°çš„å‡½æ•° 
+		//ÕâÊÇ±È½ÏÁ½¸öÕıÊıÖ®¼ä´óĞ¡µÄº¯Êı 
 		int compare(string str1,string str2){	
-			//ç›¸ç­‰è¿”å›0ï¼Œå¤§äºè¿”å›1ï¼Œå°äºè¿”å›-1
+			//ÏàµÈ·µ»Ø0£¬´óÓÚ·µ»Ø1£¬Ğ¡ÓÚ·µ»Ø-1
 			if(str1.size()>str2.size()){
-				return 1; //é•¿åº¦é•¿çš„æ•´æ•°å¤§äºé•¿åº¦å°çš„æ•´æ•°
+				return 1; //³¤¶È³¤µÄÕûÊı´óÓÚ³¤¶ÈĞ¡µÄÕûÊı
 			}else if(str1.size()<str2.size()){
 				return -1;	
 			}else{
-				return str1.compare(str2); //è‹¥é•¿åº¦ç›¸ç­‰ï¼Œåˆ™å¤´åˆ°å°¾æŒ‰ä½æ¯”è¾ƒ
+				return str1.compare(str2); //Èô³¤¶ÈÏàµÈ£¬ÔòÍ·µ½Î²°´Î»±È½Ï
 			}
 		}
 		
-		//è®¡ç®—ä¸¤ä¸ªæ•°æœ€å¤§å…¬çº¦æ•° 
+		//¼ÆËãÁ½¸öÊı×î´ó¹«Ô¼Êı 
 		string gcd(string str1,string str2){
 			int sign = 1;
-			if(str1[0] ==  '-'){			// str1ä¸ºè´Ÿæ•°ï¼Œå»é™¤å‰å¯¼è´Ÿå· 
-				sign *= -1;					//æ ‡å¿—ä½å–ç›¸åæ•° 
+			if(str1[0] ==  '-'){			// str1Îª¸ºÊı£¬È¥³ıÇ°µ¼¸ººÅ 
+				sign *= -1;					//±êÖ¾Î»È¡Ïà·´Êı 
 				str1 = str1.erase(0,1);		 
 			}
-			if(str2[0] == '-'){				// str2ä¸ºè´Ÿæ•°ï¼Œå»é™¤å‰å¯¼è´Ÿå· 
-				sign *= -1;					//æ ‡å¿—ä½å–ç›¸åæ•° 
+			if(str2[0] == '-'){				// str2Îª¸ºÊı£¬È¥³ıÇ°µ¼¸ººÅ 
+				sign *= -1;					//±êÖ¾Î»È¡Ïà·´Êı 
 				str2 = str2.erase(0,1);
 			}
-			if(str1.compare("1") == 0 || str2.compare("1") == 0){		//str1æˆ–str2ä¸º1æ—¶ 
-				if(sign == -1){				//æ ‡å¿—ä½ä½-1ï¼Œstr2åŠ è´Ÿå· 
+			if(str1.compare("1") == 0 || str2.compare("1") == 0){		//str1»òstr2Îª1Ê± 
+				if(sign == -1){				//±êÖ¾Î»Î»-1£¬str2¼Ó¸ººÅ 
 					return "-1";		 
 				}
 				return "1";
-			}else{				//str1å’Œstr2éƒ½ä¸ä¸º1æ—¶ï¼Œåˆ©ç”¨è¾—è½¬ç›¸é™¤æ³•æ±‚æœ€å¤§å…¬çº¦æ•° 
+			}else{				//str1ºÍstr2¶¼²»Îª1Ê±£¬ÀûÓÃÕ·×ªÏà³ı·¨Çó×î´ó¹«Ô¼Êı 
 				string gcd;
 				while(str2.compare("0") != 0){
 					gcd = this->MOD_INT(str1,str2);
@@ -125,7 +125,7 @@ class Fraction{
 			}
 		} 
 	
-		//è®¡ç®—ä¸¤ä¸ªæ•°æœ€å°å…¬å€æ•°
+		//¼ÆËãÁ½¸öÊı×îĞ¡¹«±¶Êı
 		string gcm(string str1,string str2){
 			if(str1.compare("1") == 0 || str2.compare("1") == 0){
 				return "1";
@@ -135,13 +135,13 @@ class Fraction{
 			}
 			string tmp1 = str1;
 			string tmp2 = str2;
-			string gcd = this->gcd(tmp1,tmp2);			//è®¡ç®—æœ€å¤§å…¬çº¦æ•° 
+			string gcd = this->gcd(tmp1,tmp2);			//¼ÆËã×î´ó¹«Ô¼Êı 
 			string gcm = this->MUL_INT(str1,str2);
-			gcm = this->DIV_INT(gcm,gcd);				//è®¡ç®—æœ€å°å…¬å€æ•° 
+			gcm = this->DIV_INT(gcm,gcd);				//¼ÆËã×îĞ¡¹«±¶Êı 
 			return gcm; 
 		} 
 		
-		//åˆ†æ•°åŠ æ³•
+		//·ÖÊı¼Ó·¨
 		Fraction ADD(Fraction num1,Fraction num2){
 			string fenmu,fenzi,gcd;
 			if(num1.fenmu.compare("0") != 0 && num1.fenzi.compare("0") == 0){
@@ -150,21 +150,21 @@ class Fraction{
 			if(num2.fenmu.compare("0") != 0 && num2.fenzi.compare("0") == 0){
 				return num1;
 			}
-			if(num1.fenmu.compare(num2.fenmu) == 0){//ä¸¤ä¸ªåˆ†æ¯ç›¸ç­‰ 
-				fenmu = num1.fenmu;									//ä¿ç•™åˆ†æ¯ 
-				fenzi = this->ADD_INT(num1.fenzi,num2.fenzi);		//è®¡ç®—åˆ†å­ 
-				gcd = this->gcd(fenmu,fenzi);						//è®¡ç®—æœ€å¤§å…¬çº¦æ•°
-				fenmu = this->DIV_INT(fenmu,gcd);					//çº¦åˆ†åçš„åˆ†æ¯
-				fenzi = this->DIV_INT(fenzi,gcd);					//çº¦åˆ†åçš„åˆ†å­
-			}else{//åˆ†æ¯ä¸ç›¸ç­‰ 
-				string fenzi1 = this->MUL_INT(num1.fenzi,num2.fenmu);			//è®¡ç®—é€šåˆ†åçš„åˆ†å­1 
-				string fenzi2 = this->MUL_INT(num2.fenzi,num1.fenmu);			//è®¡ç®—é€šåˆ†åçš„åˆ†å­2 
-				fenzi = this->ADD_INT(fenzi1,fenzi2);							//è®¡ç®—åˆ†å­ 
-				fenmu = this->MUL_INT(num1.fenmu,num2.fenmu);					//è®¡ç®—åˆ†æ¯ 
-				gcd = this->gcd(fenmu,fenzi);									//è®¡ç®—åˆ†å­å’Œåˆ†æ¯çš„æœ€å¤§å…¬çº¦æ•° 
+			if(num1.fenmu.compare(num2.fenmu) == 0){//Á½¸ö·ÖÄ¸ÏàµÈ 
+				fenmu = num1.fenmu;									//±£Áô·ÖÄ¸ 
+				fenzi = this->ADD_INT(num1.fenzi,num2.fenzi);		//¼ÆËã·Ö×Ó 
+				gcd = this->gcd(fenmu,fenzi);						//¼ÆËã×î´ó¹«Ô¼Êı
+				fenmu = this->DIV_INT(fenmu,gcd);					//Ô¼·ÖºóµÄ·ÖÄ¸
+				fenzi = this->DIV_INT(fenzi,gcd);					//Ô¼·ÖºóµÄ·Ö×Ó
+			}else{//·ÖÄ¸²»ÏàµÈ 
+				string fenzi1 = this->MUL_INT(num1.fenzi,num2.fenmu);			//¼ÆËãÍ¨·ÖºóµÄ·Ö×Ó1 
+				string fenzi2 = this->MUL_INT(num2.fenzi,num1.fenmu);			//¼ÆËãÍ¨·ÖºóµÄ·Ö×Ó2 
+				fenzi = this->ADD_INT(fenzi1,fenzi2);							//¼ÆËã·Ö×Ó 
+				fenmu = this->MUL_INT(num1.fenmu,num2.fenmu);					//¼ÆËã·ÖÄ¸ 
+				gcd = this->gcd(fenmu,fenzi);									//¼ÆËã·Ö×ÓºÍ·ÖÄ¸µÄ×î´ó¹«Ô¼Êı 
 				if(gcd.compare("1") != 0){
-					fenmu = this->DIV_INT(fenmu,gcd);								//è®¡ç®—é€šåˆ†åçš„åˆ†æ¯
-					fenzi = this->DIV_INT(fenzi,gcd);								//è®¡ç®—é€šåˆ†åçš„åˆ†å­ 	
+					fenmu = this->DIV_INT(fenmu,gcd);								//¼ÆËãÍ¨·ÖºóµÄ·ÖÄ¸
+					fenzi = this->DIV_INT(fenzi,gcd);								//¼ÆËãÍ¨·ÖºóµÄ·Ö×Ó 	
 				}
 			}
 			Fraction result;
@@ -172,9 +172,9 @@ class Fraction{
 			return result;
 		}
 		
-		//åˆ†æ•°å‡æ³•
+		//·ÖÊı¼õ·¨
 		Fraction SUB(Fraction num1,Fraction num2){
-			// num1ä¸º0æ—¶ï¼Œè¿”å›num2çš„ç›¸åæ•° 
+			// num1Îª0Ê±£¬·µ»Ønum2µÄÏà·´Êı 
 			if(num1.fenmu.compare("0") != 0 && num1.fenzi.compare("0") == 0){
 				string fenzi = num2.getFenzi();
 				if(fenzi[0] == '-'){
@@ -187,28 +187,28 @@ class Fraction{
 				result.set(fenmu,fenzi); 
 				return result;
 			}
-			//num2ä¸º0æ—¶ï¼Œè¿”å›num1 
+			//num2Îª0Ê±£¬·µ»Ønum1 
 			if(num2.fenmu.compare("0") != 0 && num2.fenzi.compare("0") == 0){
 				return num1;
 			}
 			string fenmu,fenzi,gcd; 
-			if(num1.fenmu.compare(num2.fenmu) == 0){//ä¸¤ä¸ªåˆ†æ¯ç›¸ç­‰ 
-				fenmu = num1.getFenmu();									//ä¿ç•™åˆ†æ¯ 
-				fenzi = this->SUB_INT(num1.getFenzi(),num2.getFenzi());		//è®¡ç®—åˆ†å­ 
-				gcd = this->gcd(fenmu,fenzi);						//è®¡ç®—æœ€å¤§å…¬çº¦æ•° 
+			if(num1.fenmu.compare(num2.fenmu) == 0){//Á½¸ö·ÖÄ¸ÏàµÈ 
+				fenmu = num1.getFenmu();									//±£Áô·ÖÄ¸ 
+				fenzi = this->SUB_INT(num1.getFenzi(),num2.getFenzi());		//¼ÆËã·Ö×Ó 
+				gcd = this->gcd(fenmu,fenzi);						//¼ÆËã×î´ó¹«Ô¼Êı 
 				if(gcd.compare("1") != 0){
-					fenmu = this->DIV_INT(fenmu,gcd);					//çº¦åˆ†åçš„åˆ†æ¯
-					fenzi = this->DIV_INT(fenzi,gcd);					//çº¦åˆ†åçš„åˆ†å­	
+					fenmu = this->DIV_INT(fenmu,gcd);					//Ô¼·ÖºóµÄ·ÖÄ¸
+					fenzi = this->DIV_INT(fenzi,gcd);					//Ô¼·ÖºóµÄ·Ö×Ó	
 				}
-			}else{//åˆ†æ¯ä¸ç›¸ç­‰ 
-				string fenzi1 = this->MUL_INT(num1.fenzi,num2.fenmu);			//è®¡ç®—é€šåˆ†åçš„åˆ†å­1 
-				string fenzi2 = this->MUL_INT(num2.fenzi,num1.fenmu);			//è®¡ç®—é€šåˆ†åçš„åˆ†å­2 
-				fenzi = this->SUB_INT(fenzi1,fenzi2);							//è®¡ç®—åˆ†å­ 
-				fenmu = this->MUL_INT(num1.fenmu,num2.fenmu);					//è®¡ç®—åˆ†æ¯ 
-				gcd = this->gcd(fenmu,fenzi);									//è®¡ç®—åˆ†å­å’Œåˆ†æ¯çš„æœ€å¤§å…¬çº¦æ•° 
+			}else{//·ÖÄ¸²»ÏàµÈ 
+				string fenzi1 = this->MUL_INT(num1.fenzi,num2.fenmu);			//¼ÆËãÍ¨·ÖºóµÄ·Ö×Ó1 
+				string fenzi2 = this->MUL_INT(num2.fenzi,num1.fenmu);			//¼ÆËãÍ¨·ÖºóµÄ·Ö×Ó2 
+				fenzi = this->SUB_INT(fenzi1,fenzi2);							//¼ÆËã·Ö×Ó 
+				fenmu = this->MUL_INT(num1.fenmu,num2.fenmu);					//¼ÆËã·ÖÄ¸ 
+				gcd = this->gcd(fenmu,fenzi);									//¼ÆËã·Ö×ÓºÍ·ÖÄ¸µÄ×î´ó¹«Ô¼Êı 
 				if(gcd.compare("1") != 0){
-					fenmu = this->DIV_INT(fenmu,gcd);								//è®¡ç®—é€šåˆ†åçš„åˆ†æ¯
-					fenzi = this->DIV_INT(fenzi,gcd);								//è®¡ç®—é€šåˆ†åçš„åˆ†å­ 	
+					fenmu = this->DIV_INT(fenmu,gcd);								//¼ÆËãÍ¨·ÖºóµÄ·ÖÄ¸
+					fenzi = this->DIV_INT(fenzi,gcd);								//¼ÆËãÍ¨·ÖºóµÄ·Ö×Ó 	
 				}
 			}
 			Fraction result;
@@ -216,40 +216,40 @@ class Fraction{
 			return result;
 		}
 		
-		//åˆ†æ•°ä¹˜æ³•ï¼Œä¿è¯åˆ†æ¯æ²¡æœ‰0å‡ºç°æƒ…å†µ 
+		//·ÖÊı³Ë·¨£¬±£Ö¤·ÖÄ¸Ã»ÓĞ0³öÏÖÇé¿ö 
 		Fraction MUL(Fraction num1,Fraction num2){
 			string fenmu,fenzi;
-			if(num1.fenzi.compare("0") == 0|| num2.fenzi.compare("0") == 0){		//åˆ†å­å‡ºç°0æ—¶ï¼Œç›´æ¥è¿”å›0 
+			if(num1.fenzi.compare("0") == 0|| num2.fenzi.compare("0") == 0){		//·Ö×Ó³öÏÖ0Ê±£¬Ö±½Ó·µ»Ø0 
 				Fraction result;
 				result.set("0/1");
 				return result;
 			}
-			//è®¡ç®—åˆ†æ¯ 
-			if(num1.fenmu.compare("1") == 0 && num2.fenmu.compare("1") == 0){			//ä¸¤ä¸ªåˆ†æ¯å…¨ä¸º1 
+			//¼ÆËã·ÖÄ¸ 
+			if(num1.fenmu.compare("1") == 0 && num2.fenmu.compare("1") == 0){			//Á½¸ö·ÖÄ¸È«Îª1 
 				fenmu = "1"; 
-			}else if(num1.fenmu.compare("1") == 0 && num2.fenmu.compare("1") != 0){		//num1åˆ†æ¯ä¸º1 
+			}else if(num1.fenmu.compare("1") == 0 && num2.fenmu.compare("1") != 0){		//num1·ÖÄ¸Îª1 
 				fenmu = num2.fenmu;
-			}else if(num1.fenmu.compare("1") != 0 && num2.fenmu.compare("1") == 0){		//num2åˆ†æ¯ä¸º1 
+			}else if(num1.fenmu.compare("1") != 0 && num2.fenmu.compare("1") == 0){		//num2·ÖÄ¸Îª1 
 				fenmu = num1.fenmu;
-			}else{			//ä¸¤ä¸ªåˆ†æ¯éƒ½ä¸ä¸º1 
+			}else{			//Á½¸ö·ÖÄ¸¶¼²»Îª1 
 				fenmu = this->MUL_INT(num1.fenmu,num2.fenmu);
 			}
-			//è®¡ç®—åˆ†å­
-			if(num1.fenzi.compare("1") == 0 && num2.fenzi.compare("1") == 0){			//ä¸¤ä¸ªåˆ†å­å…¨ä¸º1 
+			//¼ÆËã·Ö×Ó
+			if(num1.fenzi.compare("1") == 0 && num2.fenzi.compare("1") == 0){			//Á½¸ö·Ö×ÓÈ«Îª1 
 				fenzi = "1"; 
-			}else if(num1.fenzi.compare("1") == 0 && num2.fenzi.compare("1") != 0){		//num1åˆ†å­ä¸º1 
+			}else if(num1.fenzi.compare("1") == 0 && num2.fenzi.compare("1") != 0){		//num1·Ö×ÓÎª1 
 				fenzi = num2.fenzi; 
-			}else if(num1.fenzi.compare("1") != 0 && num2.fenzi.compare("1") == 0){		//num2åˆ†å­ä¸º1 
+			}else if(num1.fenzi.compare("1") != 0 && num2.fenzi.compare("1") == 0){		//num2·Ö×ÓÎª1 
 				fenzi = num1.fenzi; 
-			}else{			//ä¸¤ä¸ªåˆ†å­éƒ½ä¸ä¸º1 
+			}else{			//Á½¸ö·Ö×Ó¶¼²»Îª1 
 				fenzi = this->MUL_INT(num1.fenzi,num2.fenzi);
 			}
-			// åˆ†å­åˆ†æ¯éƒ½ä¸ä¸º1æ—¶éœ€è¦è¿›è¡Œçº¦åˆ† 
+			// ·Ö×Ó·ÖÄ¸¶¼²»Îª1Ê±ĞèÒª½øĞĞÔ¼·Ö 
 			if(fenmu.compare("1") != 0 && fenzi.compare("1") != 0){
 				string gcd = this->gcd(fenmu,fenzi);
 				if(gcd.compare("1") != 0){
-					fenmu = this->DIV_INT(fenmu,gcd);								//è®¡ç®—é€šåˆ†åçš„åˆ†æ¯
-					fenzi = this->DIV_INT(fenzi,gcd);								//è®¡ç®—é€šåˆ†åçš„åˆ†å­ 	
+					fenmu = this->DIV_INT(fenmu,gcd);								//¼ÆËãÍ¨·ÖºóµÄ·ÖÄ¸
+					fenzi = this->DIV_INT(fenzi,gcd);								//¼ÆËãÍ¨·ÖºóµÄ·Ö×Ó 	
 				}
 			}
 			Fraction result;
@@ -257,19 +257,19 @@ class Fraction{
 			return result; 
 		} 
 		
-		//åˆ†æ•°é™¤æ³•ï¼Œåˆ†æ¯ä¸å‡ºç°0 
+		//·ÖÊı³ı·¨£¬·ÖÄ¸²»³öÏÖ0 
 		Fraction DIV(Fraction num1,Fraction num2){
-			// num1ä¸º0æ—¶ 
+			// num1Îª0Ê± 
 			if(num1.fenmu.compare("0") != 0 && num1.fenzi.compare("0") == 0){
 				Fraction result;
 				result.set("0/1");
 				return result;
 			}
-			//num2ä¸º1æ—¶
+			//num2Îª1Ê±
 			if(num2.fenmu.compare("1") == 0 && num2.fenzi.compare("1") == 0){
 				return num1;
 			}
-			//num2ä¸º0æ—¶ï¼Œæˆ‘ä»¬å°†ç»“æœåˆå§‹åŒ–ä¸º"9999999/1" 
+			//num2Îª0Ê±£¬ÎÒÃÇ½«½á¹û³õÊ¼»¯Îª"9999999/1" 
 			if(num2.fenmu.compare("1") == 0 && num2.fenzi.compare("0") == 0){
 				Fraction result;
 				result.set("9999999/1");
@@ -277,76 +277,76 @@ class Fraction{
 			}
 			string fenmu = num2.fenzi;
 			string fenzi = num2.fenmu;
-			//é™¤æ³•è½¬åŒ–ä¸ºä¹˜æ³• 
+			//³ı·¨×ª»¯Îª³Ë·¨ 
 			Fraction tmp;
 			tmp.set(fenmu,fenzi);
 			return tmp.MUL(num1,tmp);
 		} 
 		
-		//æ•´æ•°åŠ æ³• 
+		//ÕûÊı¼Ó·¨ 
 		string ADD_INT(string str1,string str2){
-			//str1ä¸º0ï¼Œè¿”å›str2 
+			//str1Îª0£¬·µ»Østr2 
 			if(str1.compare("0") == 0){
 				return str2;
 			}
-			//str2ä¸º0ï¼Œè¿”å›str1
+			//str2Îª0£¬·µ»Østr1
 			if(str2.compare("0") == 0){
 				return str1;
 			}
-			//é«˜ç²¾åº¦åŠ æ³•
-		    int sign=1; //sign ä¸ºç¬¦å·ä½
+			//¸ß¾«¶È¼Ó·¨
+		    int sign=1; //sign Îª·ûºÅÎ»
 		    string str;
-		    if(str1[0]=='-'){	//str1ä¸ºè´Ÿæ•° 
-				if (str2[0]=='-'){	//str2ä¸ºè´Ÿæ•° 
-					sign=-1;	//-1ä»£è¡¨ä¸¤ä¸ªè´Ÿæ•°ç›¸åŠ  
-		            // å»æ‰ä¸¤ä¸ªç¬¦å·åç›¸åŠ  
+		    if(str1[0]=='-'){	//str1Îª¸ºÊı 
+				if (str2[0]=='-'){	//str2Îª¸ºÊı 
+					sign=-1;	//-1´ú±íÁ½¸ö¸ºÊıÏà¼Ó 
+		            // È¥µôÁ½¸ö·ûºÅºóÏà¼Ó 
 					str=ADD_INT(str1.erase(0,1),str2.erase(0,1));
-		        }else{//str2ä¸ºæ­£æ•°
-					//å»æ‰str1çš„ç¬¦å·ï¼Œè½¬åŒ–ä¸ºå‡æ³• 
+		        }else{//str2ÎªÕıÊı
+					//È¥µôstr1µÄ·ûºÅ£¬×ª»¯Îª¼õ·¨ 
 		            str=SUB_INT(str2,str1.erase(0,1));
 		        }
-		    }else{	// str1ä¸ºæ­£æ•° 
-		        if(str2[0]=='-'){	//str2ä¸ºè´Ÿæ•° 
-		        	// å»æ‰str2çš„è´Ÿæ•°ï¼Œè½¬åŒ–ä¸ºå‡æ³• 
+		    }else{	// str1ÎªÕıÊı 
+		        if(str2[0]=='-'){	//str2Îª¸ºÊı 
+		        	// È¥µôstr2µÄ¸ºÊı£¬×ª»¯Îª¼õ·¨ 
 		            str=SUB_INT(str1,str2.erase(0,1));
-		        }else{	//str2ä¸ºæ­£æ•° 
-					//æŠŠä¸¤ä¸ªæ•´æ•°å¯¹é½ï¼ŒçŸ­æ•´æ•°å‰é¢åŠ 0è¡¥é½
+		        }else{	//str2ÎªÕıÊı 
+					//°ÑÁ½¸öÕûÊı¶ÔÆë£¬¶ÌÕûÊıÇ°Ãæ¼Ó0²¹Æë
 		            string::size_type L1,L2;
 		            int i;
 		            L1=str1.size();
 		            L2=str2.size();
-		            if(L1<L2){	// str1çš„é•¿åº¦æ¯”str2å°ï¼Œstr1åœ¨å‰è¡¥å……0 
+		            if(L1<L2){	// str1µÄ³¤¶È±Èstr2Ğ¡£¬str1ÔÚÇ°²¹³ä0 
 		                for(i=1;i<=L2-L1;i++){
 		                	str1="0"+str1;	
 						}
-		            }else{	// str2çš„é•¿åº¦æ¯”str2å°ï¼Œstr2åœ¨å‰é¢è¡¥å……0 
+		            }else{	// str2µÄ³¤¶È±Èstr2Ğ¡£¬str2ÔÚÇ°Ãæ²¹³ä0 
 		                for(i=1;i<=L1-L2;i++){
 		                	str2="0"+str2;	
 						}
 		            }
-		            int int1=0,int2=0; //int2 è®°å½•è¿›ä½ï¼Œint1è®°å½•ç»“æœ 
+		            int int1=0,int2=0; //int2 ¼ÇÂ¼½øÎ»£¬int1¼ÇÂ¼½á¹û 
 		            for(i=str1.size()-1;i>=0;i--){
 		                int1=(int(str1[i])-'0'+int(str2[i])-'0'+int2)%10;
 		                int2=(int(str1[i])-'0'+int(str2[i])-'0'+int2)/10;
 		                str=char(int1+'0')+str;
 		            }
-		            if(int2!=0){	//è®¡ç®—ç»“æŸåè¿˜æœ‰è¿›ä½ï¼Œç›´æ¥åœ¨å‰é¢è¡¥å…… 
+		            if(int2!=0){	//¼ÆËã½áÊøºó»¹ÓĞ½øÎ»£¬Ö±½ÓÔÚÇ°Ãæ²¹³ä 
 		            	str=char(int2+'0')+str;	
 					}
 		        }
 		    }
-		    //è¿ç®—åå¤„ç†ç¬¦å·ä½
+		    //ÔËËãºó´¦Àí·ûºÅÎ»
 		    if((sign==-1)&&(str[0]!='0')){
 		    	str="-"+str;	
 			}
 		    return str;
 		}
 		
-		//æ•´æ•°å‡æ³• 
+		//ÕûÊı¼õ·¨ 
 		string SUB_INT(string str1,string str2){
-			//str1ä¸º0ï¼Œè¿”å›str2 
+			//str1Îª0£¬·µ»Østr2 
 			if(str1.compare("0") == 0){
-				//str2ä¸ºæ­£æ•° 
+				//str2ÎªÕıÊı 
 				if(str2.compare("0") == 1){
 					return "-"+str2; 
 				}else if(str2.compare("0") == 0){
@@ -355,50 +355,50 @@ class Fraction{
 					return str2.erase(0,1);
 				}
 			}
-			//str2ä¸º0ï¼Œè¿”å›str1 
+			//str2Îª0£¬·µ»Østr1 
 			if(str2.compare("0") == 0){
 				return str1;
 			}	
-			//é«˜ç²¾åº¦å‡æ³•
-		    int sign=1; //signä¸ºç¬¦å·ä½
+			//¸ß¾«¶È¼õ·¨
+		    int sign=1; //signÎª·ûºÅÎ»
 		    string str;
 		    int i,j;
-			if(str2[0]=='-'){	//str2ä¸ºè´Ÿæ•°
-				// å»æ‰str2çš„ç¬¦å·ï¼Œè½¬åŒ–ä¸ºåŠ æ³• 
+			if(str2[0]=='-'){	//str2Îª¸ºÊı
+				// È¥µôstr2µÄ·ûºÅ£¬×ª»¯Îª¼Ó·¨ 
 		        str=ADD_INT(str1,str2.erase(0,1));
-		    }else{	// str2ä¸ºæ­£æ•°
-		    	if(str1[0] == '-'){		//str1ä¸ºè´Ÿæ•°ï¼Œè½¬åŒ–ä¸ºåŠ æ³• 
+		    }else{	// str2ÎªÕıÊı
+		    	if(str1[0] == '-'){		//str1Îª¸ºÊı£¬×ª»¯Îª¼Ó·¨ 
 		    		str = ADD_INT(str1.erase(0,1),str2);
 		    		str = "-"+str;
-				}else{	//str1ä¸ºæ­£æ•° 
-					// åˆ¤æ–­str1å’Œstr2å¤§å° 
+				}else{	//str1ÎªÕıÊı 
+					// ÅĞ¶Ïstr1ºÍstr2´óĞ¡ 
 			        int res=compare(str1,str2);
 			    	//cout<<"==="<<res<<endl; 
-			        if(res==0){		//str1å’Œstr2ç›¸ç­‰ 
+			        if(res==0){		//str1ºÍstr2ÏàµÈ 
 						return "0";	
 					}
-			        if(res<0){	//str1å°äºstr2 
-			            sign=-1;	//æ ‡å¿—ä½ç½®ä¸º-1
-						// str1å’Œstr2äº’æ¢ 
+			        if(res<0){	//str1Ğ¡ÓÚstr2 
+			            sign=-1;	//±êÖ¾Î»ÖÃÎª-1
+						// str1ºÍstr2»¥»» 
 			            string temp =str1;
 			            str1=str2;
 			            str2=temp;
 			        }
 			        string::size_type tempint; 
 			        tempint=str1.size()-str2.size();
-			        // æŒ‰å€¼è¾ƒå°è€…çš„è¿›è¡Œéå†ï¼Œtempint=0è¯´æ˜é•¿åº¦ç›¸ç­‰ï¼Œå¤§äº0åˆ™str1é•¿åº¦å¤§äºstr2 
-			        // ä»æœ€åä¸€ä½å¼€å§‹éå† 
+			        // °´Öµ½ÏĞ¡ÕßµÄ½øĞĞ±éÀú£¬tempint=0ËµÃ÷³¤¶ÈÏàµÈ£¬´óÓÚ0Ôòstr1³¤¶È´óÓÚstr2 
+			        // ´Ó×îºóÒ»Î»¿ªÊ¼±éÀú 
 			        for(i=str2.size()-1;i>=0;i--){
-			        	// str1çš„å¯¹åº”ä¸ºå°äºstr2çš„å¯¹åº”ä½ 
+			        	// str1µÄ¶ÔÓ¦ÎªĞ¡ÓÚstr2µÄ¶ÔÓ¦Î» 
 			            if(str1[i+tempint]<str2[i]){
-			                j=1;	//åç§»ä½
-							//å¼€å§‹å¾ªç¯ï¼Œå¼€å§‹å¯»æ‰¾å€Ÿä½ 
+			                j=1;	//Æ«ÒÆÎ»
+							//¿ªÊ¼Ñ­»·£¬¿ªÊ¼Ñ°ÕÒ½èÎ» 
 			                while(1){
-			                	//å‰é¢çš„ä½ä¸º0ï¼Œå€Ÿ1ç½®æˆ9 
+			                	//Ç°ÃæµÄÎ»Îª0£¬½è1ÖÃ³É9 
 								if(str1[i+tempint-j]=='0'){
 			                        str1[i+tempint-j]='9';
 			                        j++;
-			                    }else{//å‰é¢çš„ä½ä¸º0ï¼Œå€Ÿ1ï¼Œå½“å‰ä½å‡1 
+			                    }else{//Ç°ÃæµÄÎ»Îª0£¬½è1£¬µ±Ç°Î»¼õ1 
 			                        str1[i+tempint-j]=char(int(str1[i+tempint-j])-1);
 			                        break;
 			                    }
@@ -408,13 +408,13 @@ class Fraction{
 			                str=char(str1[i+tempint]-str2[i]+'0')+str;
 			            }
 			        }
-			        //æŠŠå¤šä½™ä¸ºè¿›è¡Œå‘å‰è¡¥å……
+			        //°Ñ¶àÓàÎª½øĞĞÏòÇ°²¹³ä
 			        for(i=tempint-1;i>=0;i--){
 			        	str=str1[i]+str;	
 					}
 				}
 			}
-		    //å»é™¤ç»“æœä¸­å¤šä½™çš„å‰å¯¼0
+		    //È¥³ı½á¹ûÖĞ¶àÓàµÄÇ°µ¼0
 		    str.erase(0,str.find_first_not_of('0'));
 		    if(str.empty()){
 		    	str="0";	
@@ -425,67 +425,67 @@ class Fraction{
 		    return str;
 		}
 		
-		//æ•´æ•°ä¹˜æ³• 
+		//ÕûÊı³Ë·¨ 
 		string MUL_INT(string str1,string str2){
-			//str1å’Œstr2è‡³å°‘å­˜åœ¨1ä¸ª0ï¼Œç›´æ¥è¿”å›0 
+			//str1ºÍstr2ÖÁÉÙ´æÔÚ1¸ö0£¬Ö±½Ó·µ»Ø0 
 			if(str1.compare("0") == 0 || str2.compare("0") == 0){
 				return "0";
 			}
-			//str1ä¸º1ç›´æ¥è¿”å›str2 
+			//str1Îª1Ö±½Ó·µ»Østr2 
 			if(str1.compare("1") == 0){
 				return str2; 
 			}
-			//str2ä¸º1ç›´æ¥è¿”å›str1
+			//str2Îª1Ö±½Ó·µ»Østr1
 			if(str2.compare("1") == 0){
 				return str1; 
 			}
-			//str1ä¸º-1
+			//str1Îª-1
 			if(str1.compare("-1") == 0){
-				//str2ä¸ºè´Ÿæ•° 
+				//str2Îª¸ºÊı 
 				if(str2.compare("0") < 0){
 					return str2.erase(0,1);
 				}else{
-					//str2ä¸ºæ­£æ•° 
+					//str2ÎªÕıÊı 
 					return "-"+str2; 	
 				}
 			}
-			//str2ä¸º1
+			//str2Îª1
 			if(str2.compare("-1") == 0){
-				//str1ä¸ºè´Ÿæ•° 
+				//str1Îª¸ºÊı 
 				if(str1.compare("0") < 0){
 					return str1.erase(0,1);
 				}else{
-					//str1ä¸ºæ­£æ•° 
+					//str1ÎªÕıÊı 
 					return "-"+str1;	
 				}  
 			}
-			//é«˜ç²¾åº¦ä¹˜æ³•
-		    int sign=1; //sign ä¸ºç¬¦å·ä½
+			//¸ß¾«¶È³Ë·¨
+		    int sign=1; //sign Îª·ûºÅÎ»
 		    string str;
-		    // str1ä¸ºè´Ÿæ•° 
+		    // str1Îª¸ºÊı 
 		    if(str1[0]=='-'){
-		        sign*=-1;	// æ ‡å¿—ä½ä¹˜-1
-		        str1 =str1.erase(0,1);	// å»æ‰è´Ÿå· 
+		        sign*=-1;	// ±êÖ¾Î»³Ë-1
+		        str1 =str1.erase(0,1);	// È¥µô¸ººÅ 
 		    }
-		    // str2ä¸ºè´Ÿæ•° 
+		    // str2Îª¸ºÊı 
 		    if(str2[0]=='-'){
-		        sign*=-1;					// æ ‡å¿—ä½ä¹˜-1
-		        str2 =str2.erase(0,1); 		// å»æ‰è´Ÿå· 
+		        sign*=-1;					// ±êÖ¾Î»³Ë-1
+		        str2 =str2.erase(0,1); 		// È¥µô¸ººÅ 
 		    }
 		    int i,j;
 		    string::size_type L1,L2;
 		    L1=str1.size();
 		    L2=str2.size();
-		    for(i=L2-1;i>=0;i--){ //æ¨¡æ‹Ÿæ‰‹å·¥ä¹˜æ³•ç«–å¼
+		    for(i=L2-1;i>=0;i--){ //Ä£ÄâÊÖ¹¤³Ë·¨ÊúÊ½
 		        string tempstr;
 		        int int1=0,int2=0,int3=int(str2[i])-'0';
 		        if(int3!=0){
-		        	// ä¸‹é¢çš„å¾ªç¯å®ç°ç»“æœåç«¯è¡¥0æ“ä½œ 
+		        	// ÏÂÃæµÄÑ­»·ÊµÏÖ½á¹ûºó¶Ë²¹0²Ù×÷ 
 		            for(j=1;j<=(int)(L2-1-i);j++){
 		            	tempstr="0"+tempstr;	
 					}
 		            for(j=L1-1;j>=0;j--){
-		            	// int1è®°å½•ä¸ªä½æ•°ï¼Œintè®°å½•åä½æ•° 
+		            	// int1¼ÇÂ¼¸öÎ»Êı£¬int¼ÇÂ¼Ê®Î»Êı 
 		                int1=(int3*(int(str1[j])-'0')+int2)%10;
 		                int2=(int3*(int(str1[j])-'0')+int2)/10;
 		                tempstr=char(int1+'0')+tempstr;
@@ -494,10 +494,10 @@ class Fraction{
 		            	tempstr=char(int2+'0')+tempstr;	
 					}
 		        }
-		        // å½“å‰ç»“æœå’Œtempstrå‘å°† 
+		        // µ±Ç°½á¹ûºÍtempstrÏò½« 
 		        str=ADD_INT(str,tempstr);
 		    }
-		    //å»é™¤ç»“æœä¸­çš„å‰å¯¼0
+		    //È¥³ı½á¹ûÖĞµÄÇ°µ¼0
 		    str.erase(0,str.find_first_not_of('0'));
 		    if(str.empty()){
 		    	str="0";	
@@ -508,12 +508,12 @@ class Fraction{
 		    return str;
 		}
 		
-		//æ•´æ•°é™¤æ³• 
+		//ÕûÊı³ı·¨ 
 		string DIVIDE_INT(string str1,string str2,int flag){
-			//é«˜ç²¾åº¦é™¤æ³•ã€‚flag==1æ—¶,è¿”å›å•†; flag==0æ—¶,è¿”å›ä½™æ•°
-		    string quotient,residue; //å®šä¹‰å•†å’Œä½™æ•°
+			//¸ß¾«¶È³ı·¨¡£flag==1Ê±,·µ»ØÉÌ; flag==0Ê±,·µ»ØÓàÊı
+		    string quotient,residue; //¶¨ÒåÉÌºÍÓàÊı
 		    int sign1=1,sign2=1;
-		    if(str2 == "0"){  //åˆ¤æ–­é™¤æ•°æ˜¯å¦ä¸º0
+		    if(str2 == "0"){  //ÅĞ¶Ï³ıÊıÊÇ·ñÎª0
 		        quotient= "ERROR!";
 		        residue = "ERROR!";
 		        if(flag==1){
@@ -522,7 +522,7 @@ class Fraction{
 					return residue;	
 				}
 		    }
-		    //åˆ¤æ–­è¢«é™¤æ•°æ˜¯å¦ä¸º0
+		    //ÅĞ¶Ï±»³ıÊıÊÇ·ñÎª0
 			if(str1=="0"){
 				quotient="0";
 				residue ="0";
@@ -532,7 +532,7 @@ class Fraction{
 					return residue;
 				}
 			}
-			//è¢«é™¤æ•°ä¸º1ï¼Œç›´æ¥è¿”å›str1 
+			//±»³ıÊıÎª1£¬Ö±½Ó·µ»Østr1 
 			if(str2 == "1"){
 				quotient = str1;
 				residue = "0";
@@ -542,7 +542,7 @@ class Fraction{
 					return residue;
 				}
 			}
-			//è¢«é™¤æ•°ä¸º-1 
+			//±»³ıÊıÎª-1 
 			if(str2 == "-1"){
 				if(str1.compare("0") < 0){
 					quotient = str1.erase(0,1);
@@ -556,43 +556,43 @@ class Fraction{
 					return residue;
 				}
 			}
-		    // str1ä¸ºè´Ÿæ•° 
+		    // str1Îª¸ºÊı 
 		    if(str1[0]=='-'){
-		        str1 = str1.erase(0,1);		//å»é™¤å‰å¯¼0 
+		        str1 = str1.erase(0,1);		//È¥³ıÇ°µ¼0 
 		        sign1 *= -1;
 		        sign2  = -1;
 		    }
-		    // str2ä¸ºè´Ÿæ•° 
+		    // str2Îª¸ºÊı 
 		    if(str2[0]=='-'){
-		        str2 = str2.erase(0,1);		//å»é™¤å‰å¯¼0 
+		        str2 = str2.erase(0,1);		//È¥³ıÇ°µ¼0 
 		        sign1 *= -1;
 		    }
-		    //æ¯”è¾ƒstr1å’Œstr2çš„å¤§å° 
+		    //±È½Ïstr1ºÍstr2µÄ´óĞ¡ 
 		    int res=compare(str1,str2);
-		    // str1å°äºstr2 
+		    // str1Ğ¡ÓÚstr2 
 		    if(res<0){
-		    	// å•†ä¸º0ï¼Œä½™æ•°ä¸ºstr1 
+		    	// ÉÌÎª0£¬ÓàÊıÎªstr1 
 		        quotient="0";
 		        residue =str1;
 		    }else if(res == 0){
-		    	// str1ä¸str2ç›¸ç­‰,å•†ä¸º1ï¼Œä½™æ•°ä¸º0 
+		    	// str1Óëstr2ÏàµÈ,ÉÌÎª1£¬ÓàÊıÎª0 
 		        quotient="1";
 		        residue ="0";
 		    }else{
-		    	// str1å¤§äºstr2 
+		    	// str1´óÓÚstr2 
 		        string::size_type L1,L2;
 		        L1=str1.size();
 		        L2=str2.size();
 		        string tempstr;
 		        tempstr.append(str1,0,L2-1);
-		        for(int i=L2-1;i<L1;i++){ //æ¨¡æ‹Ÿæ‰‹å·¥é™¤æ³•ç«–å¼
+		        for(int i=L2-1;i<L1;i++){ //Ä£ÄâÊÖ¹¤³ı·¨ÊúÊ½
 		            tempstr=tempstr+str1[i];
-		            //å¯èƒ½å‡ºç°ä¸å¤Ÿé™¤çš„æƒ…å†µï¼Œé‚£ä¹ˆå¿…é¡»æŠŠå‰å¯¼0å»æ‰ 
+		            //¿ÉÄÜ³öÏÖ²»¹»³ıµÄÇé¿ö£¬ÄÇÃ´±ØĞë°ÑÇ°µ¼0È¥µô 
 		            tempstr.erase(0,tempstr.find_first_not_of('0'));
 		            if(tempstr.empty()){
 						tempstr="0";
 					}
-		        	for(char ch='9';ch>='0';ch--){ //è¯•å•†
+		        	for(char ch='9';ch>='0';ch--){ //ÊÔÉÌ
 		                string str;
 		                str=str+ch;
 		                if(compare(MUL_INT(str2,str),tempstr)<=0){
@@ -604,7 +604,7 @@ class Fraction{
 		        }
 		        residue=tempstr;
 		    }
-		    //å»é™¤ç»“æœä¸­çš„å‰å¯¼0
+		    //È¥³ı½á¹ûÖĞµÄÇ°µ¼0
 		    quotient.erase(0,quotient.find_first_not_of('0'));
 		    if(quotient.empty()){
 		    	quotient="0";	
@@ -622,35 +622,35 @@ class Fraction{
 			}
 		}
 		
-		//æ•´æ•°é™¤æ³•ï¼Œè¿”å›å•† 
+		//ÕûÊı³ı·¨£¬·µ»ØÉÌ 
 		string DIV_INT(string str1,string str2){
-			//é«˜ç²¾åº¦é™¤æ³•,è¿”å›å•†
+			//¸ß¾«¶È³ı·¨,·µ»ØÉÌ
 		    return DIVIDE_INT(str1,str2,1);
 		}
 		
-		//æ•´è‚ƒé™¤æ³•ï¼Œè¿”å›ä½™æ•° 
+		//ÕûËà³ı·¨£¬·µ»ØÓàÊı 
 		string MOD_INT(string str1,string str2){
-			//é«˜ç²¾åº¦é™¤æ³•,è¿”å›ä½™æ•°
+			//¸ß¾«¶È³ı·¨,·µ»ØÓàÊı
 		    return DIVIDE_INT(str1,str2,0);
 		}
 		
-		//åˆ¤æ–­åˆ†æ•°ä¸0çš„å¤§å° 
+		//ÅĞ¶Ï·ÖÊıÓë0µÄ´óĞ¡ 
 		int Compare2Zero(){
 			int sign_fenzi = 1;
 			int sign_fenmu = 1;
-			int sign = 1;		//è®°å½•æ˜¯å¦åˆ†å­å«æœ‰è´Ÿå· 
+			int sign = 1;		//¼ÇÂ¼ÊÇ·ñ·Ö×Óº¬ÓĞ¸ººÅ 
 			string fenzi = this->fenzi;
 			string fenmu = this->fenmu; 
-			if(fenzi[0] == '-'){	//åˆ†å­ä¸ºè´Ÿæ•°æ—¶ï¼Œæ”¹å˜æ ‡å¿—ä½ 
+			if(fenzi[0] == '-'){	//·Ö×ÓÎª¸ºÊıÊ±£¬¸Ä±ä±êÖ¾Î» 
 				sign_fenzi = -1;
 				fenzi = fenzi.erase(0,1);
 			}
-			if(fenmu[0] == '-'){	//åˆ†å­ä¸ºè´Ÿæ•°æ—¶ï¼Œæ”¹å˜æ ‡å¿—ä½  
+			if(fenmu[0] == '-'){	//·Ö×ÓÎª¸ºÊıÊ±£¬¸Ä±ä±êÖ¾Î»  
 				sign_fenmu = -1;
 				fenmu = fenmu.erase(0,1);
 			} 
-			int ans_fenzi = this->compare(fenzi,"0");		//æ¯”è¾ƒåˆ†å­çš„ç»å¯¹å€¼ä¸0çš„å¤§å° 
-			int ans_fenmu = this->compare(fenmu,"0");		//æ¯”è¾ƒåˆ†æ¯çš„ç»å¯¹å€¼ä¸0çš„å¤§å° 
+			int ans_fenzi = this->compare(fenzi,"0");		//±È½Ï·Ö×ÓµÄ¾ø¶ÔÖµÓë0µÄ´óĞ¡ 
+			int ans_fenmu = this->compare(fenmu,"0");		//±È½Ï·ÖÄ¸µÄ¾ø¶ÔÖµÓë0µÄ´óĞ¡ 
 			if(sign_fenzi == -1 && ans_fenzi == 1){
 				ans_fenzi = -1;
 			}
@@ -658,23 +658,23 @@ class Fraction{
 				ans_fenmu = -1;
 			}
 			int flag;
-			if(ans_fenzi == 0 && ans_fenmu != 0){		//åˆ†å­ä¸º0ï¼Œåˆ†æ¯ä¸ä¸º0ï¼Œè¿”å›0 
+			if(ans_fenzi == 0 && ans_fenmu != 0){		//·Ö×ÓÎª0£¬·ÖÄ¸²»Îª0£¬·µ»Ø0 
 				flag = 0;
 			}
-			if(ans_fenzi*ans_fenmu > 0){				//åˆ†å­åˆ†æ¯åŒå·ï¼Œè¿”å›1 
+			if(ans_fenzi*ans_fenmu > 0){				//·Ö×Ó·ÖÄ¸Í¬ºÅ£¬·µ»Ø1 
 				flag = 1;	
 			}
-			if(ans_fenzi*ans_fenmu < 0){				//åˆ†å­åˆ†æ¯å¼‚å·ï¼Œè¿”å›-1 
+			if(ans_fenzi*ans_fenmu < 0){				//·Ö×Ó·ÖÄ¸ÒìºÅ£¬·µ»Ø-1 
 				flag = -1;								
 			}
 			return flag;
 		}
 		
-		//ä¸¤ä¸ªåˆ†æ•°ä¹‹é—´çš„æ¯”è¾ƒ
+		//Á½¸ö·ÖÊıÖ®¼äµÄ±È½Ï
 		int Compare2Fraction(Fraction fraction){
 			Fraction ans,tmp;
 			tmp.set(this->getFenmu(),this->getFenzi());
-			//å‡åçš„ç»“æœä¸0ä½œå¯¹æ¯”å°±æ˜¯ä¸¤ä¸ªåˆ†æ•°ä¹‹é—´çš„å¤§å°å…³ç³» 
+			//¼õºóµÄ½á¹ûÓë0×÷¶Ô±È¾ÍÊÇÁ½¸ö·ÖÊıÖ®¼äµÄ´óĞ¡¹ØÏµ 
 			ans = ans.SUB(tmp,fraction); 
 			return ans.Compare2Zero();
 		} 
