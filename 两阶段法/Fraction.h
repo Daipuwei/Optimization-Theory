@@ -85,8 +85,8 @@ class Fraction{
 			_one.set("-1/1");
 			//分数为1或者-1时这一条件不成立时，直接不需要进行分子分母变换 
 			if(!(this->Compare2Fraction(one) == 0 || this->Compare2Fraction(_one) == 0)){
-				string fenmu = num2.fenzi;
-				string fenzi = num2.fenmu;
+				string fenmu = this->getFenmu();
+				string fenzi = this->getFenzi();
 				this->set(fenzi,fenmu); 	
 			}
 		} 
@@ -703,4 +703,3 @@ class Fraction{
 			return ans.Compare2Zero();	//返回两个数之间差与0的大小比较结果 
 		} 
 };
-

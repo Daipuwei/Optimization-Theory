@@ -425,7 +425,7 @@ class Two_Stages_Simplex{
 			}
 			cout<<"基向量为:"<<endl; 
 			for(int i = 0 ; i < this->m ; i++){
-				cout<<"x"<<this->basic_vector_list[i]+1<<" "; 
+				cout<<"\t"<<"x"<<this->basic_vector_list[i]+1; 
 			}
 			cout<<endl;
 			//获取最优解向量 
@@ -436,14 +436,27 @@ class Two_Stages_Simplex{
 				x[j] = this->b[i]; 
 			}
 			cout<<"最优解向量为:"<<endl; 
+			for(int i = 0 ; i < this->n ; i++){
+				if(this->isuse[i] == 0){
+					continue;
+				}
+				cout<<"\t"<<"x"<<i+1; 
+			}
+			cout<<endl;
 			for(int i = 0 ; i < this->n ; i ++){
-				cout<<x[i].result()<<" ";
+				if(this->isuse[i] == 0){
+					continue;
+				}
+				cout<<"\t"<<x[i].result();
 			}
 			cout<<endl;
 			Fraction opt;//最优解 
 			opt.set("0/1");	
 			//计算最优值						
 			for(int i = 0 ; i < this->n ; i++){
+				if(this->isuse[i] == 0){
+					continue;
+				} 
 				Fraction tmp;
 				tmp= tmp.MUL(this->c[i],x[i]);
 				opt = opt.ADD(opt,tmp);
@@ -452,7 +465,25 @@ class Two_Stages_Simplex{
 			//因此需要在对结果取相反数 
 			if(this->type == -1){
 				opt.setOpposite();
+			}
+			cout<<"目标系数为："<<endl; 
+			for(int i = 0 ; i < this->n ; i++){
+				if(this->isuse[i] == 0){
+					continue;
+				}
+				cout<<"\t"<<"c"<<i+1; 
+			}
+			cout<<endl;
+			for(int i = 0 ; i < this->n ; i++){
+				if(this->isuse[i] == 0){
+					continue;
+				}
+				if(type == -1){
+					this->c[i].setOpposite();	
+				}
+				cout<<"\t"<<this->c[i].result(); 
 			} 
+			cout<<endl;
 			cout<<"最优解为："<<opt.result()<<endl;
 			return  opt; 
 		}
@@ -460,38 +491,56 @@ class Two_Stages_Simplex{
 		//打印函数 
 		void Print(){
 			cout<<"约束矩阵为："<<endl;
-			for(int i = 0 ; i < this->m ; i++){
+			for(int i = 0 ; i < this->n ; i++){
+				if(this->isuse[i] == 0){
+					continue;
+				} 
+				cout<<"\t"<<"x"<<i+1; 
+			}
+			cout<<endl;
+			for(int i = 0 ; i < this->m ; i++){ 
 				for(int j = 0 ; j < this->n ; j++){
 					if(this->isuse[j] == 0){
 						continue;
 					}
-					cout<<this->A[i][j].result()<<" ";
+					cout<<"\t"<<this->A[i][j].result();
 				}
 				cout<<endl;
 			}
 			cout<<"常数项为："<<endl;
 			for(int i = 0 ; i < this->n ; i++){
 				if(this->isuse[i] == 0){
-						continue;
+					continue;
 				}
-				cout<<this->b[i].result()<<" ";
+				cout<<"\t"<<this->b[i].result();
 			} 
 			cout<<endl;
 			cout<<"目标系数（c）为："<<endl;
 			for(int i = 0 ; i < this->n ; i++){
 				if(this->isuse[i] == 0){
-						continue;
+					continue;
 				}
-				cout<<this->c[i].result()<<" ";
+				cout<<"\tx"<<i+1; 
+			}
+			cout<<endl;
+			for(int i = 0 ; i < this->n ; i++){
+				if(this->isuse[i] == 0){
+					continue;
+				}
+				cout<<"\t"<<this->c[i].result();
 			} 
 			cout<<endl;
 			cout<<"目标系数（cb）为："<<endl;
 			for(int i = 0 ; i < this->m ; i++){
-				cout<<this->cb[i].result()<<" ";
+				cout<<"\tx"<<this->basic_vector_list[i]+1;
+			} 
+			cout<<endl;
+			for(int i = 0 ; i < this->m ; i++){
+				cout<<"\t"<<this->cb[i].result();
 			}
 			cout<<endl<<"基向量组:"<<endl;
 			for(int i = 0 ; i < this->m ; i++){
-				cout<<"x"<<this->basic_vector_list[i]+1<<" ";
+				cout<<"\tx"<<this->basic_vector_list[i]+1;
 			}
 			cout<<endl;
 		} 
