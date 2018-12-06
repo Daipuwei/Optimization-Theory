@@ -213,6 +213,10 @@ class Simplex{
 				}
 			}
 			sort(basic_vector_list,basic_vector_list+this->m);
+			/*for(int i = 0 ; i < this->m ; i++){
+				int index = this->basic_vector_list[i];
+				this->cb[index] = this->c[index];
+			}*/
 			return cnt_unit_vector;
 		} 
 		

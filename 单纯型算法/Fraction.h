@@ -9,15 +9,16 @@ class Fraction{
 	public:
 		//分数类的构造函数 
 		void set(string str){
+			//字符串中没有'/'，直接分母置为1，分子为str 
 			if(str.find('/') == string::npos){
 				this->fenmu = "1";
 				this->fenzi = str;	
 			}else{
-				int index = str.find('/');
-				string fenzi = str.substr(0,index);
-				string fenmu = str.substr(index+1,str.length()-index-1);
-				this->fenmu = fenmu;
-				this->fenzi = fenzi;
+				int index = str.find('/');		//找到'/'的位置 
+				string fenzi = str.substr(0,index);	//0到index之前为分子 
+				string fenmu = str.substr(index+1,str.length()-index-1);	//index之后的字符串为分母 
+				this->setFenmu(fenmu);
+				this->setFenzi(fenzi); 
 			}
 		}
 		
@@ -40,18 +41,22 @@ class Fraction{
 			this->setFenzi(fenzi); 
 		}
 		
+		//初始化分子 
 		void setFenzi(string fenzi){
 			this->fenzi = fenzi;
 		}
 		
+		//初始化分母 
 		void setFenmu(string fenmu){
 			this->fenmu = fenmu; 
 		} 
 		
+		//获取分子 
 		string getFenzi(){
 			return this->fenzi;
 		}
 		
+		//获取分母 
 		string getFenmu(){
 			return this->fenmu; 
 		}
@@ -70,11 +75,26 @@ class Fraction{
 				}
 				this->setFenzi(fenzi); 
 			}
+		}
+		
+		//分数导数
+		void setReciprocal(){
+			//0没有导数，不给予考虑
+			Fraction one,_one;
+			one.set("1/1");
+			_one.set("-1/1");
+			//分数为1或者-1时这一条件不成立时，直接不需要进行分子分母变换 
+			if(!(this->Compare2Fraction(one) == 0 || this->Compare2Fraction(_one) == 0)){
+				string fenmu = this->getFenmu();
+				string fenzi = this->getFenzi();
+				this->set(fenzi,fenmu); 	
+			}
 		} 
 		
+		//按字符串返回分数 
 		string result(){
 			string res = this->fenzi;
-			if(this->fenmu.compare("0") != 0){
+			if(this->fenmu.compare("0") != 0){// 
 				if(this->fenmu.compare("1") != 0){
 					res = res+"/"+this->fenmu; 
 				}	
@@ -144,9 +164,11 @@ class Fraction{
 		//分数加法
 		Fraction ADD(Fraction num1,Fraction num2){
 			string fenmu,fenzi,gcd;
+			//num1分母不为0，num1分子为0，直接返回num2 
 			if(num1.fenmu.compare("0") != 0 && num1.fenzi.compare("0") == 0){
 				return num2;
 			}
+			//num1分母不为0，num2分子为0，直接返回num1 
 			if(num2.fenmu.compare("0") != 0 && num2.fenzi.compare("0") == 0){
 				return num1;
 			}
@@ -154,15 +176,17 @@ class Fraction{
 				fenmu = num1.fenmu;									//保留分母 
 				fenzi = this->ADD_INT(num1.fenzi,num2.fenzi);		//计算分子 
 				gcd = this->gcd(fenmu,fenzi);						//计算最大公约数
-				fenmu = this->DIV_INT(fenmu,gcd);					//约分后的分母
-				fenzi = this->DIV_INT(fenzi,gcd);					//约分后的分子
+				if(gcd.compare("1") != 0){		//最大公约数不为1时，需要进行约分 
+					fenmu = this->DIV_INT(fenmu,gcd);					//约分后的分母
+					fenzi = this->DIV_INT(fenzi,gcd);					//约分后的分子					
+				}
 			}else{//分母不相等 
 				string fenzi1 = this->MUL_INT(num1.fenzi,num2.fenmu);			//计算通分后的分子1 
 				string fenzi2 = this->MUL_INT(num2.fenzi,num1.fenmu);			//计算通分后的分子2 
 				fenzi = this->ADD_INT(fenzi1,fenzi2);							//计算分子 
 				fenmu = this->MUL_INT(num1.fenmu,num2.fenmu);					//计算分母 
 				gcd = this->gcd(fenmu,fenzi);									//计算分子和分母的最大公约数 
-				if(gcd.compare("1") != 0){
+				if(gcd.compare("1") != 0){		//最大公约数不为1时，需要进行约分 
 					fenmu = this->DIV_INT(fenmu,gcd);								//计算通分后的分母
 					fenzi = this->DIV_INT(fenzi,gcd);								//计算通分后的分子 	
 				}
@@ -174,29 +198,21 @@ class Fraction{
 		
 		//分数减法
 		Fraction SUB(Fraction num1,Fraction num2){
-			// num1为0时，返回num2的相反数 
-			if(num1.fenmu.compare("0") != 0 && num1.fenzi.compare("0") == 0){
-				string fenzi = num2.getFenzi();
-				if(fenzi[0] == '-'){
-					fenzi = fenzi.erase(0,1);
-				}else{
-					fenzi = '-'+fenzi; 
-				}
-				string fenmu = num2.fenmu;
-				Fraction result;
-				result.set(fenmu,fenzi); 
-				return result;
+			//num1为0时，返回num2的相反数 
+			if(num1.getFenmu().compare("0") != 0 && num1.getFenzi().compare("0") == 0){
+				num2.setOpposite(); 
+				return num2;
 			}
 			//num2为0时，返回num1 
-			if(num2.fenmu.compare("0") != 0 && num2.fenzi.compare("0") == 0){
+			if(num2.getFenmu().compare("0") != 0 && num2.getFenzi().compare("0") == 0){
 				return num1;
 			}
 			string fenmu,fenzi,gcd; 
-			if(num1.fenmu.compare(num2.fenmu) == 0){//两个分母相等 
+			if(num1.getFenmu().compare(num2.fenmu) == 0){//两个分母相等 
 				fenmu = num1.getFenmu();									//保留分母 
 				fenzi = this->SUB_INT(num1.getFenzi(),num2.getFenzi());		//计算分子 
 				gcd = this->gcd(fenmu,fenzi);						//计算最大公约数 
-				if(gcd.compare("1") != 0){
+				if(gcd.compare("1") != 0){		//最大公约数不为1时，需要进行约分 
 					fenmu = this->DIV_INT(fenmu,gcd);					//约分后的分母
 					fenzi = this->DIV_INT(fenzi,gcd);					//约分后的分子	
 				}
@@ -206,7 +222,7 @@ class Fraction{
 				fenzi = this->SUB_INT(fenzi1,fenzi2);							//计算分子 
 				fenmu = this->MUL_INT(num1.fenmu,num2.fenmu);					//计算分母 
 				gcd = this->gcd(fenmu,fenzi);									//计算分子和分母的最大公约数 
-				if(gcd.compare("1") != 0){
+				if(gcd.compare("1") != 0){			//最大公约数不为1时，需要进行约分 
 					fenmu = this->DIV_INT(fenmu,gcd);								//计算通分后的分母
 					fenzi = this->DIV_INT(fenzi,gcd);								//计算通分后的分子 	
 				}
@@ -216,9 +232,16 @@ class Fraction{
 			return result;
 		}
 		
-		//分数乘法，保证分母没有0出现情况 
+		//分数乘法
 		Fraction MUL(Fraction num1,Fraction num2){
 			string fenmu,fenzi;
+			//两个分母至少有一个0时，直接返回无穷大("9999999/1") 
+			if(num1.fenmu.compare("0") == 0|| num2.fenmu.compare("0") == 0){
+				Fraction result;
+				result.set("9999999/1");
+				return result;
+			} 
+			//两个分子至少有一个0时，直接返回0 
 			if(num1.fenzi.compare("0") == 0|| num2.fenzi.compare("0") == 0){		//分子出现0时，直接返回0 
 				Fraction result;
 				result.set("0/1");
@@ -244,10 +267,10 @@ class Fraction{
 			}else{			//两个分子都不为1 
 				fenzi = this->MUL_INT(num1.fenzi,num2.fenzi);
 			}
-			// 分子分母都不为1时需要进行约分 
+			//分母都不为1,且分子不为0时可能需要进行约分 
 			if(fenmu.compare("1") != 0 && fenzi.compare("1") != 0){
 				string gcd = this->gcd(fenmu,fenzi);
-				if(gcd.compare("1") != 0){
+				if(gcd.compare("1") != 0){		//最大公约数不为1时，需要进行约分 
 					fenmu = this->DIV_INT(fenmu,gcd);								//计算通分后的分母
 					fenzi = this->DIV_INT(fenzi,gcd);								//计算通分后的分子 	
 				}
@@ -257,7 +280,7 @@ class Fraction{
 			return result; 
 		} 
 		
-		//分数除法，分母不出现0 
+		//分数除法
 		Fraction DIV(Fraction num1,Fraction num2){
 			// num1为0时 
 			if(num1.fenmu.compare("0") != 0 && num1.fenzi.compare("0") == 0){
@@ -275,11 +298,12 @@ class Fraction{
 				result.set("9999999/1");
 				return result;
 			}
-			string fenmu = num2.fenzi;
-			string fenzi = num2.fenmu;
-			//除法转化为乘法 
-			Fraction tmp;
+			Fraction tmp; 
+			string fenmu = num2.getFenmu();
+			string fenzi = num2.getFenzi();
 			tmp.set(fenmu,fenzi);
+			tmp.setReciprocal();	//计算导数 
+			//除法转化为乘法 
 			return tmp.MUL(num1,tmp);
 		} 
 		
@@ -676,6 +700,6 @@ class Fraction{
 			tmp.set(this->getFenmu(),this->getFenzi());
 			//减后的结果与0作对比就是两个分数之间的大小关系 
 			ans = ans.SUB(tmp,fraction); 
-			return ans.Compare2Zero();
+			return ans.Compare2Zero();	//返回两个数之间差与0的大小比较结果 
 		} 
 };
