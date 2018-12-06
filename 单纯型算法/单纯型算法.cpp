@@ -111,7 +111,6 @@ class Simplex{
 			int flag[this->n],index[this->n];
 			//判断是否存在m个线性无关单位向量
 			int cnt_unit_vector = this->exsitUnitMatrix(flag,index,this->n);
-			cout<<cnt_unit_vector<<endl; 
 			if(cnt_unit_vector != this->m){	//未找到m个线性无关单位向量 
 				Transform(flag,index,this->n);
 			} 
@@ -120,17 +119,20 @@ class Simplex{
 			for(int i = 0 ; i < this->n ; i++){
 				test_array[i].set("0/1");
 			}
-			this->Print();
 			while(1){
+				this->Print();
 				//计算检验数向量(典式)
 				this->ComputeTestNumber(test_array,this->n);
 				cout<<endl<<"检验数为："<<endl;
 				for(int i = 0 ; i < this->n ; i++){
-					cout<<test_array[i].result()<<" ";
+					cout<<"\tx"<<i+1;
+				}
+				cout<<endl; 
+				for(int i = 0 ; i < this->n ; i++){
+					cout<<"\t"<<test_array[i].result();
 				}
 				cout<<endl;
 				//判断典式是否全小于0
-				//cout<<"是否全部小于等于0："<<this->isAllLessZero(test_array,this->n)<<endl;
 				if(this->isAllLessZero(test_array,this->n)){
 					ans = true;
 					break;
@@ -165,7 +167,6 @@ class Simplex{
 						this->cb[r] = this->c[max_col]; 
 					} 
 				}
-				this->Print();
 			}
 			return ans;
 		} 
@@ -213,10 +214,6 @@ class Simplex{
 				}
 			}
 			sort(basic_vector_list,basic_vector_list+this->m);
-			/*for(int i = 0 ; i < this->m ; i++){
-				int index = this->basic_vector_list[i];
-				this->cb[index] = this->c[index];
-			}*/
 			return cnt_unit_vector;
 		} 
 		
@@ -315,30 +312,6 @@ class Simplex{
 			return index;		//返回下标 
 		} 
 		
-		//在每列中发寻找1的下标 
-		int FindOne(int col){
-			int cnt0 = 0; 
-			int index = -1;
-			Fraction one;
-			one.set("1/1");
-			for(int i = 0; i < this->m ; i++){
-				//发现元素1 
-				if(this->A[i][col].Compare2Fraction(one) == 0){
-					index = i;
-				}
-				//发现元素0 
-				if(this->A[i][col].Compare2Zero() == 0){
-					cnt0++; 
-				}
-			}
-			//该列存在m-1的元素0，剩下一个元素1，返回元素1的下标 
-			if(cnt0 == this->m-1 && index != -1){
-				return index;
-			}else{//否则返回-1 
-				return -1;
-			}
-		}
-		
 		//寻找基变量列表中k所在的下标 
 		int Find_BasicVector_Index(int k){
 			for(int i = 0 ; i < this->m ; i++){
@@ -389,64 +362,6 @@ class Simplex{
 			} 
 		}
 		
-		//在A[row][col]所在列搜索非负元素 
-		int Search_Col(int row,int col){
-			int index = -1;		//index用来存储寻找的元素的行坐标，-1代表没有找到 
-			//从最后一行开始搜索，将当前行放到最后面，防止之后多次交换操作 
-			for(int i = this->m-1 ; i > row ; i--){
-				if(this->A[i][col].Compare2Zero() != 0){   //找到不为0的元素 
-					index = i;
-					break;
-				}
-			}
-			return index;
-		} 
-		
-		//在A[row][col]所在行搜索非负元素 
-		int Search_Row(int row,int col){
-			int index = -1;		//index用来存储寻找的元素的列坐标，-1代表没有找到 
-			//从最后一列开始搜索，将当前列放到最后面，防止之后多次交换操作 
-			for(int i = this->n-1 ; i > col ; i--){
-				if(this->A[row][i].Compare2Zero() != 0){   //找到不为0的元素 
-					index = i;
-					break;
-				}
-			}
-			return index;
-		} 
-		
-		//按行交换 
-		void Swap_Row(int row1,int row2){
-			//将下标为row1和row2进行交换 
-			for(int i = 0 ; i < this->n ; i++){
-				Fraction tmp = this->A[row1][i];
-				this->A[row1][i] = this->A[row2][i];
-				this->A[row2][i] = tmp;
-			}
-			//对常数项数组对应元素进行调整
-			Fraction tmp = this->b[row1];
-			this->b[row1] = this->b[row2];
-			this->b[row2] = tmp; 
-		}
-		
-		//两列交换 
-		void Swap_Col(int col1,int col2){
-			//交换约束系数矩阵第col1列和第col2列 
-			for(int i = 0 ; i < this->m ; i++){
-				Fraction tmp = this->A[i][col1];
-				this->A[i][col1] = this->A[i][col2];
-				this->A[i][col2] = tmp;
-			}
-			//将目标目标系数进行互换 
-			Fraction tmp = this->c[col1];
-			this->c[col1] = this->c[col2];
-			this->c[col2] = tmp;
-			//变量列表交换
-			int tmp1 = this->basic_vector_list[col1];
-			this->basic_vector_list[col1] = this->basic_vector_list[col2];
-			this->basic_vector_list[col2] = tmp1; 
-		}
-		
 		//计算最优解 
 		Fraction getopt(){
 			//初始化最优解向量为0 
@@ -458,7 +373,7 @@ class Simplex{
 			}
 			cout<<"基向量为:"<<endl; 
 			for(int i = 0 ; i < this->m ; i++){
-				cout<<"x"<<this->basic_vector_list[i]+1<<" "; 
+				cout<<"\t"<<"x"<<this->basic_vector_list[i]+1; 
 			}
 			cout<<endl;
 			//获取最优解向量 
@@ -468,9 +383,13 @@ class Simplex{
 				//基变量赋值 
 				x[j] = this->b[i]; 
 			}
-			cout<<"最优解向量为:"<<endl; 
+			cout<<"最优解向量为:"<<endl;
+			for(int i = 0 ; i < this->n ; i++){
+				cout<<"\tx"<<this->basic_vector_list[i]+1;
+			}
+			cout<<endl; 
 			for(int i = 0 ; i < this->n ; i ++){
-				cout<<x[i].result()<<" ";
+				cout<<"\t"<<x[i].result();
 			}
 			cout<<endl;
 			Fraction opt;//最优解 
@@ -485,7 +404,19 @@ class Simplex{
 			//因此需要在对结果取相反数 
 			if(this->type == -1){
 				opt.setOpposite();
+			}
+			cout<<"目标系数为："<<endl; 
+			for(int i = 0 ; i < this->n ; i++){
+				cout<<"\t"<<"c"<<i+1; 
+			}
+			cout<<endl;
+			for(int i = 0 ; i < this->n ; i++){
+				if(type == -1){
+					this->c[i].setOpposite();	
+				}
+				cout<<"\t"<<this->c[i].result(); 
 			} 
+			cout<<endl;
 			cout<<"最优解为："<<opt.result()<<endl;
 			return  opt; 
 		}
@@ -493,29 +424,41 @@ class Simplex{
 		//打印函数 
 		void Print(){
 			cout<<"约束矩阵为："<<endl;
+			for(int i = 0 ; i < this->n ; i++){
+				cout<<"\t"<<"x"<<i+1;
+			}
+			cout<<endl; 
 			for(int i = 0 ; i < this->m ; i++){
 				for(int j = 0 ; j < this->n ; j++){
-					cout<<this->A[i][j].result()<<" ";
+					cout<<"\t"<<this->A[i][j].result();
 				}
 				cout<<endl;
 			}
 			cout<<"常数项为："<<endl;
 			for(int i = 0 ; i < this->n ; i++){
-				cout<<this->b[i].result()<<" ";
+				cout<<"\t"<<this->b[i].result();
 			} 
 			cout<<endl;
 			cout<<"目标系数（c）为："<<endl;
 			for(int i = 0 ; i < this->n ; i++){
-				cout<<this->c[i].result()<<" ";
+				cout<<"\t"<<"c"<<i+1;
+			}
+			cout<<endl; 
+			for(int i = 0 ; i < this->n ; i++){
+				cout<<"\t"<<this->c[i].result();
 			} 
 			cout<<endl;
 			cout<<"目标系数（cb）为："<<endl;
 			for(int i = 0 ; i < this->m ; i++){
-				cout<<this->cb[i].result()<<" ";
+				cout<<"\t"<<"c"<<this->basic_vector_list[i]+1;
+			}
+			cout<<endl; 
+			for(int i = 0 ; i < this->m ; i++){
+				cout<<"\t"<<this->cb[i].result();
 			}
 			cout<<endl<<"基向量组:"<<endl;
 			for(int i = 0 ; i < this->m ; i++){
-				cout<<"x"<<this->basic_vector_list[i]+1<<" ";
+				cout<<"\tx"<<this->basic_vector_list[i]+1;
 			}
 			cout<<endl;
 		} 
