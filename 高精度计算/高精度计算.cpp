@@ -77,7 +77,7 @@ class Fraction{
 			}
 		}
 		
-		//分数倒数
+		//分数导数
 		void setReciprocal(){
 			//0没有导数，不给予考虑
 			Fraction one,_one;
@@ -94,7 +94,7 @@ class Fraction{
 		//按字符串返回分数 
 		string result(){
 			string res = this->fenzi;
-			if(this->fenmu.compare("0") != 0){
+			if(this->fenmu.compare("0") != 0){// 
 				if(this->fenmu.compare("1") != 0){
 					res = res+"/"+this->fenmu; 
 				}	
